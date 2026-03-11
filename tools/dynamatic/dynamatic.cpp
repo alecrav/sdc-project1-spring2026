@@ -1,0 +1,1123 @@
+//===- dynamatic.cpp - Dynamatic frontend -----------------------*- C++ -*-===//
+//
+// Dynamatic is under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+// This tool implements a (barebone, at this point) shell/frontend for
+// Dynamatic, allowing users to go from C to VHDL using a simple command syntax.
+// See the sample scripts in samples/ to get an idea of the syntax, or type
+// 'help' in the shell to see a list of available commands and theit syntax. The
+// sample scripts can be executed automatically on shell startup with the
+// following command (from Dynamatic's top-level directory):
+//
+// ```sh
+// ./bin/dynamatic --run=tools/dynamatic/samples/<script-name>.sh
+// ```
+//
+// The tool severely lacks documentation (and cleanliness) at this point. This
+// will all be fixed in future releases.
+//
+//===----------------------------------------------------------------------===//
+
+#include "dynamatic/Support/LLVM.h"
+#include "dynamatic/Support/System.h"
+#include "mlir/Support/IndentedOstream.h"
+#include "mlir/Support/LLVM.h"
+#include "mlir/Support/LogicalResult.h"
+#include "llvm/ADT/SmallVector.h"
+#include "llvm/ADT/StringExtras.h"
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/CommandLine.h"
+#include "llvm/Support/FileSystem.h"
+#include "llvm/Support/InitLLVM.h"
+#include "llvm/Support/Path.h"
+#include "llvm/Support/raw_ostream.h"
+#include <algorithm>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iomanip>
+#include <memory>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <sstream>
+
+using namespace llvm;
+using namespace llvm::sys;
+using namespace mlir;
+using namespace dynamatic;
+
+static constexpr llvm::StringLiteral ERR("[ERROR] "),
+    DELIM("============================================="
+          "===================================\n"),
+    PROMPT("dynamatic> "), CMD_SET_SRC("set-src");
+
+static cl::OptionCategory mainCategory("Application options");
+
+static cl::opt<std::string>
+    run("run", cl::Optional,
+        cl::desc("Path to a text file containing a sequence of commands to run "
+                 "on startup."),
+        cl::init(""), cl::cat(mainCategory));
+
+static cl::opt<bool> exitOnFailure(
+    "exit-on-failure", cl::Optional,
+    cl::desc(
+        "If specified, exits the frontend automatically on command failure"),
+    cl::init(false), cl::cat(mainCategory));
+
+static constexpr llvm::StringLiteral VHDL("vhdl");
+static constexpr llvm::StringLiteral VERILOG("verilog");
+
+namespace {
+enum class CommandResult { SYNTAX_ERROR, FAIL, SUCCESS, EXIT, HELP };
+} // namespace
+
+template <typename... Tokens>
+static CommandResult execCmd(Tokens... tokens) {
+  return exec({tokens...}) != 0 ? CommandResult::FAIL : CommandResult::SUCCESS;
+}
+
+std::string floatToString(double f, size_t nDecimalPlaces) {
+  std::stringstream ss;
+  ss << std::fixed << std::setprecision(nDecimalPlaces) << f;
+  return ss.str();
+}
+
+namespace {
+
+struct FrontendState {
+  std::string cwd;
+  std::string dynamaticPath;
+  std::string vivadoPath = "/tools/Xilinx/Vivado/2019.1/";
+  std::string fpUnitsGenerator = "flopoco";
+  llvm::StringLiteral hdl = VHDL;
+  // By default, the clock period is 4 ns
+  double targetCP = 4.0;
+  std::optional<std::string> sourcePath = std::nullopt;
+  std::string outputDir = "out";
+
+  FrontendState(StringRef cwd) : cwd(cwd), dynamaticPath(cwd){};
+
+  bool sourcePathIsSet(StringRef keyword);
+
+  std::string getScriptsPath() const {
+    return dynamaticPath + "/tools/dynamatic/scripts";
+  }
+
+  inline std::string getSeparator() const {
+    return sys::path::get_separator().str();
+  }
+
+  inline std::string getKernelDir() const {
+    assert(sourcePath && "source path not set");
+    return path::parent_path(*sourcePath).str();
+  }
+
+  inline std::string getKernelName() const {
+    assert(sourcePath && "source path not set");
+    return path::filename(*sourcePath).drop_back(2).str();
+  }
+
+  inline std::string getOutputDir() const {
+    return getKernelDir() + getSeparator() + outputDir;
+  }
+
+  std::string makeAbsolutePath(StringRef path);
+};
+
+struct Argument {
+  StringRef name;
+  StringRef desc;
+
+  Argument() = default;
+
+  Argument(StringRef name, StringRef desc) : name(name), desc(desc){};
+};
+
+struct CommandArguments {
+  SmallVector<StringRef> positionals;
+  mlir::DenseSet<StringRef> flags;
+  StringMap<StringRef> options;
+};
+
+class Command {
+public:
+  StringRef keyword;
+  StringRef desc;
+
+  StringMap<Argument> positionals;
+  StringMap<Argument> flags;
+  StringMap<Argument> options;
+
+  Command(StringRef keyword, StringRef desc, FrontendState &state)
+      : keyword(keyword), desc(desc), state(state) {}
+
+  void addPositionalArg(const Argument &arg) {
+    assert(!positionals.contains(arg.name) && "duplicate positional arg name");
+    positionals[arg.name] = arg;
+  }
+
+  void addFlag(const Argument &arg) {
+    assert(!flags.contains(arg.name) && "duplicate flag name");
+    assert(!options.contains(arg.name) && "option and flag have same name");
+    flags[arg.name] = arg;
+  }
+
+  void addOption(const Argument &arg) {
+    assert(!options.contains(arg.name) && "duplicate option name");
+    assert(!flags.contains(arg.name) && "option and flag have same name");
+    options[arg.name] = arg;
+  }
+
+  CommandResult parseAndExecute(ArrayRef<std::string> tokens);
+
+  virtual CommandResult execute(CommandArguments &args) = 0;
+
+  std::string getShortCmdDesc() const;
+
+  void help() const;
+
+  virtual ~Command() = default;
+
+protected:
+  FrontendState &state;
+
+  inline std::string getSeparator() const { return state.getSeparator(); }
+
+private:
+  LogicalResult parsePositional(StringRef arg, CommandArguments &args) const;
+
+  LogicalResult parseFlag(StringRef name, CommandArguments &args) const;
+
+  LogicalResult parseOption(StringRef name, StringRef value,
+                            CommandArguments &args) const;
+};
+
+class Exit : public Command {
+public:
+  Exit(FrontendState &state)
+      : Command("exit", "Exits the Dynamatic frontend", state){};
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class Help : public Command {
+public:
+  Help(FrontendState &state)
+      : Command("help", "Displays this help message", state){};
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class SetDynamaticPath : public Command {
+public:
+  SetDynamaticPath(FrontendState &state)
+      : Command("set-dynamatic-path",
+                "Sets the path to Dynamatic's top-level directory", state) {
+    addPositionalArg({"path", "path to Dynamatic's top-level directory"});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class SetVivadoPath : public Command {
+public:
+  SetVivadoPath(FrontendState &state)
+      : Command("set-vivado-path",
+                "Sets the path to Vivado installation directory", state) {
+    addPositionalArg({"path", "path to Vivado installation directory"});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class SetFPUnitsGenerator : public Command {
+public:
+  SetFPUnitsGenerator(FrontendState &state)
+      : Command("set-fp-units-generator",
+                "Sets the floating-point units generator to use", state) {
+    addPositionalArg({"generator",
+                      "floating-point units generator, values are 'flopoco' "
+                      "(default option) or 'vivado'"});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class SetSrc : public Command {
+public:
+  SetSrc(FrontendState &state)
+      : Command(CMD_SET_SRC, "Sets the C source to compile", state) {
+    addPositionalArg({"source", "path to source file"});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class SetCP : public Command {
+public:
+  SetCP(FrontendState &state)
+      : Command("set-clock-period", "Sets the clock period", state) {
+    addPositionalArg({"clock-period", "clock period in ns"});
+  }
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class SetOutputDir : public Command {
+public:
+  SetOutputDir(FrontendState &state)
+      : Command("set-output-dir",
+                "Sets the name of the dir to perform HLS in. If not set, "
+                "defaults to 'out'",
+                state) {
+    addPositionalArg({"out_dir", "out dir name"});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class Compile : public Command {
+public:
+  static constexpr llvm::StringLiteral FAST_TOKEN_DELIVERY =
+      "fast-token-delivery";
+  static constexpr llvm::StringLiteral BUFFER_ALGORITHM = "buffer-algorithm";
+  static constexpr llvm::StringLiteral MILP_SOLVER = "milp-solver";
+  static constexpr llvm::StringLiteral SHARING = "sharing";
+  static constexpr llvm::StringLiteral RIGIDIFICATION = "rigidification";
+  static constexpr llvm::StringLiteral DISABLE_LSQ = "disable-lsq";
+  static constexpr llvm::StringLiteral STRAIGHT_TO_QUEUE = "straight-to-queue";
+
+  Compile(FrontendState &state)
+      : Command("compile",
+                "Compiles the source kernel into a dataflow circuit; "
+                "produces both handshake-level IR and an equivalent DOT file",
+                state) {
+    addOption({BUFFER_ALGORITHM,
+               "The buffer placement algorithm to use, values are "
+               "'on-merges' (default option: minimum buffering for "
+               "correctness), 'fpga20' (throughput-driven buffering), "
+               "'fpl22' (throughput- and timing-driven buffering), or "
+               "costaware (throughput- and area-driven buffering), or "
+               "'mapbuf' (simultaneous technology mapping and buffer "
+               "placement)"});
+    addOption({MILP_SOLVER,
+               "The MILP solvers to use. Values are 'gurobi' (Dynamatic "
+               "needs to be built with Gurobi support) and 'cbc'. The default "
+               "option is gurobi and it will fall back to cbc if gurobi is not "
+               "available."});
+    addFlag({SHARING, "Use credit-based resource sharing"});
+    addFlag({FAST_TOKEN_DELIVERY,
+             "Use fast token delivery strategy to build the circuit"});
+    addFlag({RIGIDIFICATION, "Use model-checking for rigidification"});
+    addFlag({DISABLE_LSQ, "Force usage of memory controllers instead of LSQs. "
+                          "Warning: This may result in out-of-order memory "
+                          "accesses, use with caution!"});
+    addFlag({STRAIGHT_TO_QUEUE,
+             "Use straight to queue to connect the circuit to the LSQ"});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class StaticHLS : public Command {
+  static constexpr llvm::StringLiteral SCHEDULING_ALGORITHM =
+      "scheduling-algorithm";
+  static constexpr llvm::StringLiteral MILP_SOLVER = "milp-solver";
+  static constexpr llvm::StringLiteral MAX_II = "max-ii";
+  static constexpr llvm::StringLiteral RESOURCE_CONSTRAINTS =
+      "resource-constraints";
+
+public:
+  StaticHLS(FrontendState &state)
+      : Command("static_hls",
+                "Compile the source code and generate a statically scheduled "
+                "CFX dialect",
+                state) {
+    addOption({SCHEDULING_ALGORITHM,
+               "Which algorithm to use during scheduling. The "
+               "option are 'asap', 'alap', 'pipelined'."});
+    addOption({MILP_SOLVER,
+               "The MILP solvers to use. Values are 'gurobi' (Dynamatic "
+               "needs to be built with Gurobi support) and 'cbc'. The default "
+               "option is gurobi and it will fall back to cbc if gurobi is not "
+               "available."});
+    addOption({MAX_II,
+               "The maximum initiation interval to try for pipelined "
+               "scheduling. This option is only relevant if the "
+               "scheduling algorithm is set to 'pipelined'. The default "
+               "value is 30."});
+    addOption(
+        {RESOURCE_CONSTRAINTS,
+         "The resource constraints to use during scheduling. The "
+         "input is the path of a JSON file specifying the resource constraints."
+         "For more details on the format of the JSON file, please refer to "
+         "documentation in docs."});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class GettingStarted : public Command {
+public:
+  GettingStarted(FrontendState &state)
+      : Command("getting_started",
+                "Compile the source code and run the getting started pass",
+                state) {}
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class WriteHDL : public Command {
+public:
+  static constexpr llvm::StringLiteral HDL = "hdl";
+
+  WriteHDL(FrontendState &state)
+      : Command(
+            "write-hdl",
+            "Converts the DOT file produced after compile to VHDL using the "
+            "export-dot tool",
+            state) {
+    addOption({HDL, "HDL to use for design's top-level"});
+  }
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class Simulate : public Command {
+public:
+  static constexpr llvm::StringLiteral SIMULATOR = "simulator";
+
+  Simulate(FrontendState &state)
+      : Command("simulate",
+                "Simulates the VHDL produced during HDL writing using a "
+                "simulator of choice "
+                "and the hls-verifier tool",
+                state) {
+    addOption({SIMULATOR, "The simulator to use for verification, options are "
+                          "'ghdl' (GHDL), 'vsim' (default option: ModelSim), "
+                          "'xsim' (Vivado), 'verilator' (Verilator)"});
+  }
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class Visualize : public Command {
+public:
+  Visualize(FrontendState &state)
+      : Command(
+            "visualize",
+            "Visualizes the execution of the circuit simulated by Modelsim.",
+            state) {}
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class Synthesize : public Command {
+public:
+  Synthesize(FrontendState &state)
+      : Command("synthesize",
+                "Synthesizes the VHDL produced during HDL writing using Vivado",
+                state) {}
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class EstimatePower : public Command {
+public:
+  EstimatePower(FrontendState &state)
+      : Command("estimate-power",
+                "Estimate the power consumption of the design using switching "
+                "activity from simulation.",
+                state) {}
+
+  CommandResult execute(CommandArguments &args) override;
+};
+
+class FrontendCommands {
+public:
+  StringMap<std::unique_ptr<Command>> cmds;
+
+  FrontendCommands() = default;
+
+  template <typename Cmd>
+  void add(FrontendState &state) {
+    std::unique_ptr<Cmd> newCmd = std::make_unique<Cmd>(state);
+    if (cmds.contains(newCmd->keyword)) {
+      llvm::errs() << "Multiple commands exist with keyword '"
+                   << newCmd->keyword << "'\n.";
+      exit(1);
+    }
+    cmds[newCmd->keyword.str()] = std::move(newCmd);
+  }
+
+  bool contains(StringRef keyword) { return cmds.contains(keyword); }
+
+  Command &get(StringRef keyword) {
+    assert(cmds.contains(keyword));
+    return *cmds[keyword];
+  }
+};
+} // namespace
+
+std::string FrontendState::makeAbsolutePath(StringRef path) {
+  SmallString<128> str;
+  path::append(str, path);
+  fs::make_absolute(cwd, str);
+  return str.str().str();
+}
+
+bool FrontendState::sourcePathIsSet(StringRef keyword) {
+  if (!sourcePath.has_value()) {
+    llvm::errs() << ERR
+                 << "The path to the source file needs to be set to run '"
+                 << keyword << "' use the '" << CMD_SET_SRC
+                 << "' command before '" << keyword << "'.\n";
+    return false;
+  }
+  return true;
+}
+
+CommandResult Command::parseAndExecute(ArrayRef<std::string> tokens) {
+  // Don't report an error if the command is just empty
+  if (tokens.empty())
+    return CommandResult::SUCCESS;
+
+  CommandArguments parsed;
+  ArrayRef<std::string> opts = tokens.drop_front();
+  for (const auto *tokIt = opts.begin(); tokIt != opts.end(); ++tokIt) {
+    StringRef tok = *tokIt;
+    if (tok.starts_with("--")) {
+      // Flag or option
+      StringRef name = tok.drop_front(2);
+      if (flags.contains(name)) {
+        // This is a flag
+        if (failed(parseFlag(name, parsed)))
+          return CommandResult::SYNTAX_ERROR;
+      } else if (options.contains(name)) {
+        // This is an option
+        const auto *nextToken = ++tokIt;
+        if (nextToken == opts.end()) {
+          llvm::errs() << "Missing value for option '" << tok << "'\n";
+          return CommandResult::SYNTAX_ERROR;
+        }
+        if (failed(parseOption(name, *nextToken, parsed)))
+          return CommandResult::SYNTAX_ERROR;
+      } else {
+        llvm::errs() << ERR << "Unknow flag/option '" << tok << "'\n";
+        return CommandResult::SYNTAX_ERROR;
+      }
+    } else if (failed(parsePositional(tok, parsed))) {
+      // Positional argument
+      return CommandResult::SYNTAX_ERROR;
+    }
+  }
+
+  return execute(parsed);
+}
+
+LogicalResult Command::parsePositional(StringRef arg,
+                                       CommandArguments &args) const {
+  // Positional argument
+  if (args.positionals.size() == positionals.size()) {
+    llvm::outs() << ERR << "Expected only " << positionals.size()
+                 << " argument for " << keyword << " command, but got extra '"
+                 << arg << "'.\n";
+    return failure();
+  }
+  args.positionals.push_back(arg);
+  return success();
+};
+
+LogicalResult Command::parseFlag(StringRef name, CommandArguments &args) const {
+  if (args.flags.contains(name)) {
+    llvm::errs() << ERR << "Flag '" << name << "' given more than once\n";
+    return failure();
+  }
+  args.flags.insert(name);
+  return success();
+};
+
+LogicalResult Command::parseOption(StringRef name, StringRef value,
+                                   CommandArguments &args) const {
+  if (args.options.contains(name)) {
+    llvm::errs() << ERR << "Option '" << name << "' given more than once\n";
+    return failure();
+  }
+  args.options.insert({name, value});
+  return success();
+};
+
+std::string Command::getShortCmdDesc() const {
+  std::stringstream ss;
+  ss << keyword.str() << " ";
+  if (!flags.empty())
+    ss << "[options] ";
+  for (auto &nameAndArg : positionals)
+    ss << "<" << nameAndArg.first().str() << "> ";
+  return ss.str();
+}
+
+void Command::help() const {
+  mlir::raw_indented_ostream os(llvm::outs());
+  os << "USAGE: " << getShortCmdDesc() << "\n\n";
+
+  auto printListArgs =
+      [&](const StringMap<Argument> &args, const std::string &catName,
+          const std::function<void(StringRef)> &fmtArg) -> void {
+    if (args.empty())
+      return;
+    os << catName << ":\n";
+    size_t maxLength = 0;
+    std::vector<StringRef> posArgsStr;
+    for (auto &nameAndArg : args)
+      maxLength = std::max(maxLength, nameAndArg.second.name.size());
+
+    os.indent();
+    for (auto &nameAndArg : args) {
+      const Argument &arg = nameAndArg.second;
+      fmtArg(arg.name);
+      os << std::string(maxLength - arg.name.size(), ' ') << " - " << arg.desc
+         << "\n";
+    }
+    os.unindent();
+    os << "\n";
+  };
+
+  printListArgs(positionals, "ARGUMENTS",
+                [&](auto ref) { os << "<" << ref << ">"; });
+  printListArgs(flags, "FLAGS", [&](auto ref) { os << "--" << ref; });
+  printListArgs(options, "OPTIONS",
+                [&](auto ref) { os << "--" << ref << " <option-value>"; });
+  os << "\n";
+}
+
+CommandResult Exit::execute(CommandArguments &args) {
+  return CommandResult::EXIT;
+}
+
+CommandResult Help::execute(CommandArguments &args) {
+  return CommandResult::HELP;
+}
+
+CommandResult SetDynamaticPath::execute(CommandArguments &args) {
+  if (args.positionals.empty()) {
+    llvm::outs() << ERR << "Please specify a valid path.\n";
+    return CommandResult::FAIL;
+  }
+
+  // Remove the separator at the end of the path if there is one
+  StringRef sep = sys::path::get_separator();
+  std::string dynamaticPath = args.positionals.front().str();
+  if (StringRef(dynamaticPath).ends_with(sep))
+    dynamaticPath = dynamaticPath.substr(0, dynamaticPath.size() - 1);
+
+  if (!fs::exists(dynamaticPath + sep + "bin" + sep + "dynamatic")) {
+    llvm::outs()
+        << ERR
+        << "No 'dynamatic' executable found in bin/, Dynamatic doesn't "
+           "seem to have been built.\n";
+    return CommandResult::FAIL;
+  }
+
+  state.dynamaticPath = state.makeAbsolutePath(dynamaticPath);
+  return CommandResult::SUCCESS;
+}
+
+CommandResult SetVivadoPath::execute(CommandArguments &args) {
+  if (args.positionals.empty()) {
+    llvm::outs() << ERR
+                 << "Please specify a valid path such as\n "
+                    "/home/username/Xilinx/2025.1/Vivado/\n";
+    return CommandResult::FAIL;
+  }
+
+  // Remove the separator at the end of the path if there is one
+  StringRef sep = sys::path::get_separator();
+  std::string vivadoPath = args.positionals.front().str();
+  if (StringRef(vivadoPath).ends_with(sep))
+    vivadoPath = vivadoPath.substr(0, vivadoPath.size() - 1);
+
+  // Check whether there is a bin directory in the Vivado path
+  // There should be no bin since we are looking for the top-level directory
+  if (!fs::exists(vivadoPath)) {
+    llvm::outs() << ERR
+                 << "The path to Vivado does not exist, "
+                    "please specify a valid top-level Vivado directory such "
+                    "as\n /home/username/Xilinx/2025.1/Vivado/\n";
+    return CommandResult::FAIL;
+  }
+
+  if (vivadoPath.compare(vivadoPath.size() - 4, 4, "/bin") == 0) {
+    llvm::outs() << ERR
+                 << "The path to Vivado should not contain a 'bin' directory, "
+                    "please specify the top-level Vivado directory.\n";
+    return CommandResult::FAIL;
+  }
+
+  state.vivadoPath = state.makeAbsolutePath(vivadoPath);
+  return CommandResult::SUCCESS;
+}
+
+CommandResult SetFPUnitsGenerator::execute(CommandArguments &args) {
+  if (args.positionals.empty()) {
+    llvm::outs() << ERR << "Please specify a valid FP unit generator.\n"
+                 << "Options: flopoco, vivado\n";
+    return CommandResult::FAIL;
+  }
+
+  StringRef generator = args.positionals.front();
+
+  if (generator.empty()) {
+    llvm::outs() << ERR << "Please specify a floating-point units generator.\n"
+                 << "Options: flopoco, vivado\n";
+    return CommandResult::FAIL;
+  }
+  state.fpUnitsGenerator = generator.str();
+  return CommandResult::SUCCESS;
+}
+CommandResult SetSrc::execute(CommandArguments &args) {
+  if (args.positionals.empty()) {
+    llvm::outs() << ERR << "Please specify a non-empty source\n";
+    return CommandResult::FAIL;
+  }
+
+  std::string sourcePath = args.positionals.front().str();
+  StringRef srcName = path::filename(sourcePath);
+  if (!fs::exists(sourcePath)) {
+    llvm::outs() << ERR << "Source path <<" << sourcePath
+                 << ">> does not exist. Kindly enter a valid source path\n";
+    return CommandResult::FAIL;
+  }
+
+  if (!srcName.ends_with(".c")) {
+    llvm::outs() << ERR
+                 << "Expected source file to have .c extension, but got '"
+                 << path::extension(srcName) << "'.\n";
+    return CommandResult::FAIL;
+  }
+
+  state.sourcePath = state.makeAbsolutePath(sourcePath);
+  return CommandResult::SUCCESS;
+}
+
+CommandResult SetOutputDir::execute(CommandArguments &args) {
+  if (args.positionals.empty()) {
+    llvm::outs() << ERR << "Please specify a non-empty output dir\n";
+    return CommandResult::FAIL;
+  }
+
+  llvm::StringRef outputDir = args.positionals.front();
+
+  // reject trivial bad cases
+  if (outputDir.empty() || outputDir == "." || outputDir == ".." ||
+      outputDir.endswith("/"))
+    return CommandResult::FAIL;
+
+  // reject illegal chars
+  if (outputDir.find_first_of("*?<>|\"") != llvm::StringRef::npos)
+    return CommandResult::FAIL;
+
+  state.outputDir = outputDir.str();
+  return CommandResult::SUCCESS;
+}
+
+CommandResult SetCP::execute(CommandArguments &args) {
+  if (args.positionals.empty()) {
+    llvm::outs() << ERR << "Specified Clock Period is illegal.\n";
+    return CommandResult::FAIL;
+  }
+
+  // Parse the float argument and check if the argument is legal.
+  if (llvm::to_float(args.positionals.front().str(), state.targetCP))
+    return CommandResult::SUCCESS;
+  llvm::outs() << ERR << "Specified CP = " << args.positionals.front().str()
+               << " is illegal.\n";
+  return CommandResult::FAIL;
+}
+
+CommandResult Compile::execute(CommandArguments &args) {
+  // We need the source path to be set
+  if (!state.sourcePathIsSet(keyword))
+    return CommandResult::FAIL;
+
+  std::string script = state.getScriptsPath() + getSeparator() + "compile.sh";
+  // If unspecified, we place a OB + TB after every merge to guarantee
+  // the deadlock freeness.
+  std::string buffers = "on-merges";
+
+#ifndef DYNAMATIC_GUROBI_NOT_INSTALLED
+  std::string milpSolver = "gurobi";
+#else
+  std::string milpSolver = "cbc";
+#endif // DYNAMATIC_GUROBI_NOT_INSTALLED
+
+  std::string fastTokenDelivery =
+      args.flags.contains(FAST_TOKEN_DELIVERY) ? "1" : "0";
+  std::string straightToQueue =
+      args.flags.contains(STRAIGHT_TO_QUEUE) ? "1" : "0";
+
+  if (auto it = args.options.find(BUFFER_ALGORITHM); it != args.options.end()) {
+    if (it->second == "on-merges" || it->second == "fpga20" ||
+        it->second == "fpl22" || it->second == "costaware" ||
+        it->second == "mapbuf") {
+      buffers = it->second;
+    } else {
+      llvm::errs()
+          << "Unknown buffer placement algorithm " << it->second
+          << "! Possible options are 'on-merges' (minimum buffering for "
+             "correctness), 'fpga20' (throughput-driven buffering), or 'fpl22' "
+             "(throughput- and timing-driven buffering), or 'costaware' "
+             "(throughput- and area-driven buffering), or 'mapbuf' "
+             "(simultaneous technology mapping and buffer placement).";
+      return CommandResult::FAIL;
+    }
+  }
+
+  if (auto it = args.options.find(MILP_SOLVER); it != args.options.end()) {
+    milpSolver = it->second;
+  }
+
+  std::string sharing = args.flags.contains(SHARING) ? "1" : "0";
+  std::string rigidification = args.flags.contains(RIGIDIFICATION) ? "1" : "0";
+  std::string disableLSQ = args.flags.contains(DISABLE_LSQ) ? "1" : "0";
+
+  return execCmd(script, state.dynamaticPath, state.getKernelDir(),
+                 state.getOutputDir(), state.getKernelName(), buffers,
+                 floatToString(state.targetCP, 3), sharing,
+                 state.fpUnitsGenerator, rigidification, disableLSQ,
+                 fastTokenDelivery, milpSolver, straightToQueue);
+}
+
+CommandResult StaticHLS::execute(CommandArguments &args) {
+  std::string script =
+      state.getScriptsPath() + getSeparator() + "static-hls.sh";
+
+#ifndef DYNAMATIC_GUROBI_NOT_INSTALLED
+  std::string milpSolver = "gurobi";
+#else
+  std::string milpSolver = "cbc";
+#endif // DYNAMATIC_GUROBI_NOT_INSTALLED
+
+  std::string schedulingAlgorithm = "asap";
+  std::string maxII = "";
+  std::string resourceConstraints = "";
+
+  if (auto it = args.options.find(MILP_SOLVER); it != args.options.end()) {
+    milpSolver = it->second;
+  }
+
+  if (auto it = args.options.find(SCHEDULING_ALGORITHM);
+      it != args.options.end()) {
+    schedulingAlgorithm = it->second;
+  }
+
+  if (auto it = args.options.find(MAX_II); it != args.options.end()) {
+    if (schedulingAlgorithm != "pipelined") {
+      llvm::errs() << "Option '" << MAX_II
+                   << "' is only relevant for pipelined scheduling.\n";
+      return CommandResult::FAIL;
+    }
+    if (std::stoi(it->second.str()) <= 0) {
+      llvm::errs() << "Max II should be a positive integer.\n";
+      return CommandResult::FAIL;
+    }
+    maxII = it->second.str();
+  }
+
+  if (auto it = args.options.find(RESOURCE_CONSTRAINTS);
+      it != args.options.end()) {
+    resourceConstraints = it->second.str();
+  }
+
+  return execCmd(script, state.dynamaticPath, state.getKernelDir(),
+                 state.getOutputDir(), state.getKernelName(), "static-hls",
+                 schedulingAlgorithm, milpSolver, maxII, resourceConstraints);
+}
+
+CommandResult GettingStarted::execute(CommandArguments &args) {
+  std::string script =
+      state.getScriptsPath() + getSeparator() + "static-hls.sh";
+
+  return execCmd(script, state.dynamaticPath, state.getKernelDir(),
+                 state.getOutputDir(), state.getKernelName(),
+                 "getting-started");
+}
+
+CommandResult WriteHDL::execute(CommandArguments &args) {
+  // We need the source path to be set
+  if (!state.sourcePathIsSet(keyword))
+    return CommandResult::FAIL;
+
+  std::string script = state.getScriptsPath() + getSeparator() + "write-hdl.sh";
+  std::string hdl = "vhdl";
+
+  if (auto it = args.options.find(HDL); it != args.options.end()) {
+    if (it->second == "verilog") {
+      hdl = "verilog";
+      state.hdl = VERILOG;
+    } else if (it->second == "verilog-beta") {
+      hdl = "verilog-beta";
+    } else if (it->second == "smv") {
+      hdl = "smv";
+    } else if (it->second != "vhdl") {
+      llvm::errs() << "Unknow HDL '" << it->second
+                   << "', possible options are 'vhdl',"
+                      "'verilog', and 'smv'.\n";
+      return CommandResult::FAIL;
+    }
+  }
+
+  return execCmd(script, state.dynamaticPath, state.getOutputDir(),
+                 state.getKernelName(), hdl);
+}
+
+CommandResult Simulate::execute(CommandArguments &args) {
+  // We need the source path to be set
+  if (!state.sourcePathIsSet(keyword))
+    return CommandResult::FAIL;
+
+  std::string simulator = "vsim";
+  std::string script = state.getScriptsPath() + getSeparator() + "simulate.sh";
+
+  if (auto it = args.options.find(SIMULATOR); it != args.options.end()) {
+    if (it->second == "vsim" || it->second == "xsim" || it->second == "ghdl" ||
+        it->second == "verilator") {
+      simulator = it->second;
+    } else {
+      llvm::errs() << "Unknow Simulator '" << it->second
+                   << "', possible options are 'ghdl', "
+                      "'xsim', 'vsim' and 'verilator'.\n";
+      return CommandResult::FAIL;
+    }
+  }
+
+  if (simulator == "ghdl" && state.hdl != VHDL) {
+    llvm::errs() << "Simulator 'ghdl' is not compatible with this HDL. Use "
+                    "'vsim', 'xsim' or 'verilator'. \n";
+    return CommandResult::FAIL;
+  }
+
+  if (simulator == "verilator" && state.hdl != VERILOG) {
+    llvm::errs()
+        << "Simulator 'verilator' is not compatible with this HDL. Use "
+           "'vsim', 'xsim' or 'ghdl'. \n";
+    return CommandResult::FAIL;
+  }
+
+  return execCmd(script, state.dynamaticPath, state.getKernelDir(),
+                 state.getOutputDir(), state.getKernelName(), state.vivadoPath,
+                 state.fpUnitsGenerator == "vivado" ? "true" : "false",
+                 simulator, state.hdl);
+}
+
+CommandResult Visualize::execute(CommandArguments &args) {
+  // We need the source path to be set
+  if (!state.sourcePathIsSet(keyword))
+    return CommandResult::FAIL;
+
+  std::string sep = getSeparator();
+  std::string script = state.getScriptsPath() + sep + "visualize.sh";
+  std::string dotPath = state.getOutputDir() + sep + "comp" + sep +
+                        state.getKernelName() + ".dot";
+  std::string wlfPath = state.getOutputDir() + sep + "sim" + sep +
+                        "HLS_VERIFY" + sep + "vsim.wlf";
+
+  return execCmd(script, state.dynamaticPath, dotPath, wlfPath,
+                 state.getOutputDir(), state.getKernelName());
+}
+
+CommandResult Synthesize::execute(CommandArguments &args) {
+  // We need the source path to be set
+  if (!state.sourcePathIsSet(keyword))
+    return CommandResult::FAIL;
+
+  std::string script =
+      state.getScriptsPath() + getSeparator() + "synthesize.sh";
+
+  return execCmd(script, state.dynamaticPath, state.getOutputDir(),
+                 state.getKernelName(), floatToString(state.targetCP, 3),
+                 floatToString(state.targetCP / 2, 3));
+}
+
+CommandResult EstimatePower::execute(CommandArguments &args) {
+  // We need the source path to be set
+  if (!state.sourcePathIsSet(keyword))
+    return CommandResult::FAIL;
+
+  std::string script =
+      state.dynamaticPath + "/tools/dynamatic/estimate_power/estimate_power.py";
+
+  // clang-format off
+  return execCmd(
+    "python", script,
+    "--output_dir", state.getOutputDir(),
+    "--kernel_name", state.getKernelName(),
+    "--cp", floatToString(state.targetCP, 3)
+  );
+  // clang-format on
+}
+
+static StringRef removeComment(StringRef input) {
+  if (size_t cutAt = input.find('#'); cutAt != std::string::npos)
+    return input.take_front(cutAt);
+  return input;
+}
+
+static void tokenizeInput(StringRef input, SmallVector<std::string> &tokens) {
+  tokens.clear();
+  std::istringstream inputStream(removeComment(input).str());
+  std::string tok;
+  while (inputStream >> tok)
+    tokens.push_back(tok);
+}
+
+static void help(FrontendCommands &commands) {
+  llvm::outs() << "List of available commands:\n\n";
+
+  size_t maxLength = 0;
+  std::vector<std::string> cmdFormats;
+  for (auto &kwAndCmd : commands.cmds) {
+    std::unique_ptr<Command> &cmd = kwAndCmd.second;
+    std::string desc = cmd->getShortCmdDesc();
+    maxLength = std::max(maxLength, desc.size());
+    cmdFormats.push_back(desc);
+  }
+
+  mlir::raw_indented_ostream os(llvm::outs());
+  os.indent();
+  for (auto [fmt, kwAndCmd] : llvm::zip(cmdFormats, commands.cmds)) {
+    std::unique_ptr<Command> &cmd = kwAndCmd.second;
+    os << fmt << std::string(maxLength - fmt.size(), ' ') << " - " << cmd->desc
+       << "\n";
+  }
+  os.unindent();
+  llvm::outs() << "\n";
+}
+
+int main(int argc, char **argv) {
+  InitLLVM y(argc, argv);
+
+  // Only show our own arguments in the help message
+  cl::HideUnrelatedOptions(mainCategory);
+
+  cl::ParseCommandLineOptions(
+      argc, argv,
+      "Dynamatic Frontend. \nThis is our external help message, for arguments "
+      "which are passed directly to the binary. \nYou may find our internal "
+      "help message more helpful, which describes the arguments which are "
+      "passed to our custom shell. \nThe internal help message can be accessed "
+      "by running this binary with no arguments, and then writing 'help'.\n");
+
+  // Get current working directory
+  SmallString<128> cwd;
+  if (std::error_code ec = fs::current_path(cwd); ec.value() != 0) {
+    llvm::errs() << "Failed to read current working directory.\n";
+    return 1;
+  }
+
+  // Set up the frontend and available commands
+  FrontendState state(cwd.str());
+  FrontendCommands commands;
+  commands.add<SetDynamaticPath>(state);
+  commands.add<SetVivadoPath>(state);
+  commands.add<SetFPUnitsGenerator>(state);
+  commands.add<SetSrc>(state);
+  commands.add<SetCP>(state);
+  commands.add<SetOutputDir>(state);
+  commands.add<Compile>(state);
+  commands.add<StaticHLS>(state);
+  commands.add<GettingStarted>(state);
+  commands.add<WriteHDL>(state);
+  commands.add<Simulate>(state);
+  commands.add<Visualize>(state);
+  commands.add<Synthesize>(state);
+  commands.add<EstimatePower>(state);
+  commands.add<Help>(state);
+  commands.add<Exit>(state);
+
+  SmallVector<std::string> tokens;
+  auto handleCmd = [&](StringRef input, bool prompt) -> void {
+    tokenizeInput(input, tokens);
+    if (tokens.empty())
+      return;
+
+    if (prompt)
+      llvm::outs() << PROMPT << input << "\n";
+
+    // Look for the command
+    StringRef kw = tokens.front();
+    if (!commands.contains(kw)) {
+      llvm::outs() << ERR << "Unknown command '" << kw << "'.\n";
+      help(commands);
+      if (exitOnFailure)
+        exit(1);
+      return;
+    }
+
+    Command &cmd = commands.get(kw);
+
+    // Decode the command that was identified via its keyword
+    switch (cmd.parseAndExecute(tokens)) {
+    case CommandResult::SYNTAX_ERROR:
+      cmd.help();
+      [[fallthrough]];
+    case CommandResult::FAIL:
+      if (!exitOnFailure)
+        return;
+      exit(1);
+    case CommandResult::EXIT:
+      llvm::outs() << "\nGoodbye!\n";
+      exit(0);
+    case CommandResult::HELP:
+      help(commands);
+      break;
+    default:
+      break;
+    }
+  };
+
+  auto splitOnSemicolonAndHandle = [&](StringRef input, bool prompt) -> void {
+    std::stringstream lineStream(removeComment(input).str());
+    for (std::string cmd; std::getline(lineStream, cmd, ';');)
+      handleCmd(cmd, prompt);
+  };
+
+  // Print frontend header
+  llvm::outs()
+      << DELIM +
+             "============== Dynamatic | Dynamic High-Level Synthesis Compiler "
+             "===============\n" +
+             "======================== EPFL-LAP - v2.0.0 | March 2024 "
+             "========================\n" +
+             DELIM + "\n\n";
+
+  // If a startup script is defined, we must run its commands first
+  if (!run.empty()) {
+    // Open the script
+    std::ifstream inputFile(run);
+    std::stringstream ss;
+    if (!inputFile.is_open()) {
+      llvm::errs() << "Failed to open startup script.\n";
+      return 1;
+    }
+
+    // Read the script line-by-line and execute its commands
+    // Supported delimeters: '\n' and ';'
+    for (std::string scriptInput; std::getline(inputFile, scriptInput, '\n');)
+      splitOnSemicolonAndHandle(scriptInput, true);
+  }
+
+  // Read from stdin, multiple commands in one line are separated by ';'
+  // readline handles command history, allows user to repeat commands
+  // with arrow keys
+  while (char *rawInput = readline(PROMPT.str().c_str())) {
+    add_history(rawInput);
+    splitOnSemicolonAndHandle(std::string(rawInput), false);
+    free(rawInput);
+  }
+  return 0;
+}

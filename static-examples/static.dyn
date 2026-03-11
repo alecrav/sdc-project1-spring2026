@@ -1,0 +1,9 @@
+# Run static scheduling on a single example.
+# For all examples, use static_full.dyn.
+
+set-dynamatic-path .
+
+set-src static-examples/example_1/example_1.c
+static_hls --scheduling-algorithm asap
+
+exit

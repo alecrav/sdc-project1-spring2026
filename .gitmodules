@@ -1,0 +1,12 @@
+[submodule "visual-dataflow/godot-cpp"]
+	path = visual-dataflow/godot-cpp
+	url = https://github.com/godotengine/godot-cpp
+	branch = 4.1
+  shallow = true
+[submodule "data/aig"]
+	path = data/aig
+	url = https://github.com/ETHZ-DYNAMO/dataflow-aig-library
+[submodule "llvm-project"]
+	path = llvm-project
+  url = https://github.com/EPFL-LAP/llvm-project.git
+  shallow = true

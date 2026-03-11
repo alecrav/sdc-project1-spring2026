@@ -1,0 +1,17 @@
+[configuration]
+
+entry_symbol = "visualDataflowInit"
+compatibility_minimum = 4.1
+
+[libraries]
+
+macos.debug = "res://build/libVisualDataflow.macos.framework"
+macos.release = "res://build/libVisualDataflow.macos.framework"
+windows.debug.x86_32 = "res://build/libVisualDataflow.windows.x86_32.dll"
+windows.release.x86_32 = "res://build/libVisualDataflow.windows.x86_32.dll"
+windows.debug.x86_64 = "res://build/libVisualDataflow.windows.x86_64.dll"
+windows.release.x86_64 = "res://build/libVisualDataflow.windows.x86_64.dll"
+linux.debug.x86_64 = "res://build/libVisualDataflow.linux.x86_64.so"
+linux.release.x86_64 = "res://build/libVisualDataflow.linux.x86_64.so"
+linux.debug.arm64 = "res://build/libVisualDataflow.linux.x86_64.so"
+linux.release.arm64 = "res://build/libVisualDataflow.linux.arm64.so"

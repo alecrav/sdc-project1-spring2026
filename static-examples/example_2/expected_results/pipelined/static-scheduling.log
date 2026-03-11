@@ -1,0 +1,376 @@
+
+# ====================== #
+# Static Scheduling Result #
+# ====================== #
+
+Operation: start0 scheduled at time: 0
+Operation: constant1 scheduled at time: 0
+Operation: br1 scheduled at time: 0
+Operation: br2 scheduled at time: 0
+Operation: br3 scheduled at time: 0
+Operation: br4 scheduled at time: 0
+Operation: phi0 scheduled at time: 0
+Operation: phi1 scheduled at time: 6
+Operation: phi2 scheduled at time: 0
+Operation: phi3 scheduled at time: 0
+Operation: constant2 scheduled at time: 0
+Operation: constant6 scheduled at time: 0
+Operation: extui0 scheduled at time: 0
+Operation: index_cast0 scheduled at time: 0
+Operation: load0 scheduled at time: 0
+Operation: extui1 scheduled at time: 0
+Operation: index_cast1 scheduled at time: 0
+Operation: load1 scheduled at time: 0
+Operation: muli0 scheduled at time: 1
+Operation: extui2 scheduled at time: 0
+Operation: index_cast2 scheduled at time: 0
+Operation: load2 scheduled at time: 0
+Operation: extui3 scheduled at time: 0
+Operation: index_cast3 scheduled at time: 0
+Operation: load3 scheduled at time: 0
+Operation: muli1 scheduled at time: 1
+Operation: addi0 scheduled at time: 5
+Operation: addi1 scheduled at time: 6
+Operation: addi2 scheduled at time: 0
+Operation: cmpi0 scheduled at time: 1
+Operation: cond_br2 scheduled at time: 1
+Operation: cond_br3 scheduled at time: 7
+Operation: cond_br4 scheduled at time: 1
+Operation: cond_br5 scheduled at time: 1
+Operation: cond_br6 scheduled at time: 1
+Operation: cond_br7 scheduled at time: 7
+Operation: cond_br8 scheduled at time: 1
+Operation: cond_br9 scheduled at time: 1
+Operation: phi4 scheduled at time: 0
+Operation: phi5 scheduled at time: 3
+Operation: phi6 scheduled at time: 0
+Operation: phi7 scheduled at time: 0
+Operation: constant7 scheduled at time: 0
+Operation: extui4 scheduled at time: 0
+Operation: index_cast4 scheduled at time: 0
+Operation: load4 scheduled at time: 0
+Operation: extui5 scheduled at time: 0
+Operation: index_cast5 scheduled at time: 0
+Operation: load5 scheduled at time: 0
+Operation: muli2 scheduled at time: 1
+Operation: extui6 scheduled at time: 0
+Operation: index_cast6 scheduled at time: 0
+Operation: load6 scheduled at time: 0
+Operation: extui7 scheduled at time: 0
+Operation: index_cast7 scheduled at time: 0
+Operation: load7 scheduled at time: 0
+Operation: muli3 scheduled at time: 1
+Operation: addi3 scheduled at time: 5
+Operation: addi4 scheduled at time: 6
+Operation: muli4 scheduled at time: 0
+Operation: cmpi1 scheduled at time: 4
+Operation: cond_br10 scheduled at time: 4
+Operation: cond_br11 scheduled at time: 7
+Operation: cond_br12 scheduled at time: 4
+Operation: cond_br13 scheduled at time: 4
+Operation: cond_br14 scheduled at time: 7
+Operation: cond_br15 scheduled at time: 4
+Operation: return1 scheduled at time: 0
+
+=== Scheduling Result ===
+Function: example_2
+  Basic Block #0
+    -----------+---+
+      Operation| 0 |
+    -----------+---+
+    arg_0      | - |
+    arg_1      | - |
+    arg_2      | - |
+    arg_3      | - |
+    arg_4      | - |
+    start0     | - |
+    constant1  | - |
+    br1        | - |
+    br2        | - |
+    br3        | - |
+    br4        | - |
+    -----------+---+
+
+  Basic Block #1
+    (Initiation Interval: 1)
+    -------------+---+---+---+---+---+---+---+---+
+        Operation| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+    -------------+---+---+---+---+---+---+---+---+
+    phi0         | - |   |   |   |   |   |   |   |
+    phi1         |   |   |   |   |   |   | - |   |
+    phi2         | - |   |   |   |   |   |   |   |
+    phi3         | - |   |   |   |   |   |   |   |
+    constant2    | - |   |   |   |   |   |   |   |
+    constant6    | - |   |   |   |   |   |   |   |
+    extui0       | - |   |   |   |   |   |   |   |
+    index_cast0  | - |   |   |   |   |   |   |   |
+    load0        | X |   |   |   |   |   |   |   |
+    extui1       | - |   |   |   |   |   |   |   |
+    index_cast1  | - |   |   |   |   |   |   |   |
+    load1        | X |   |   |   |   |   |   |   |
+    muli0        |   | X | X | X | X |   |   |   |
+    extui2       | - |   |   |   |   |   |   |   |
+    index_cast2  | - |   |   |   |   |   |   |   |
+    load2        | X |   |   |   |   |   |   |   |
+    extui3       | - |   |   |   |   |   |   |   |
+    index_cast3  | - |   |   |   |   |   |   |   |
+    load3        | X |   |   |   |   |   |   |   |
+    muli1        |   | X | X | X | X |   |   |   |
+    addi0        |   |   |   |   |   | X |   |   |
+    addi1        |   |   |   |   |   |   | X |   |
+    addi2        | X |   |   |   |   |   |   |   |
+    cmpi0        |   | - |   |   |   |   |   |   |
+    cond_br2     |   | - |   |   |   |   |   |   |
+    cond_br3     |   |   |   |   |   |   |   | - |
+    cond_br4     |   | - |   |   |   |   |   |   |
+    cond_br5     |   | - |   |   |   |   |   |   |
+    cond_br6     |   | - |   |   |   |   |   |   |
+    cond_br7     |   |   |   |   |   |   |   | - |
+    cond_br8     |   | - |   |   |   |   |   |   |
+    cond_br9     |   | - |   |   |   |   |   |   |
+    -------------+---+---+---+---+---+---+---+---+
+
+    Pipelined view (3 iterations, II=1)
+    -------------+---+---+---+---+---+---+---+---+---+---+
+        Operation| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+    -------------+---+---+---+---+---+---+---+---+---+---+
+    phi0         | - |   |   |   |   |   |   |   |   |   |
+    phi1         |   |   |   |   |   |   | - |   |   |   |
+    phi2         | - |   |   |   |   |   |   |   |   |   |
+    phi3         | - |   |   |   |   |   |   |   |   |   |
+    constant2    | - |   |   |   |   |   |   |   |   |   |
+    constant6    | - |   |   |   |   |   |   |   |   |   |
+    extui0       | - |   |   |   |   |   |   |   |   |   |
+    index_cast0  | - |   |   |   |   |   |   |   |   |   |
+    load0        | X |   |   |   |   |   |   |   |   |   |
+    extui1       | - |   |   |   |   |   |   |   |   |   |
+    index_cast1  | - |   |   |   |   |   |   |   |   |   |
+    load1        | X |   |   |   |   |   |   |   |   |   |
+    muli0        |   | X | X | X | X |   |   |   |   |   |
+    extui2       | - |   |   |   |   |   |   |   |   |   |
+    index_cast2  | - |   |   |   |   |   |   |   |   |   |
+    load2        | X |   |   |   |   |   |   |   |   |   |
+    extui3       | - |   |   |   |   |   |   |   |   |   |
+    index_cast3  | - |   |   |   |   |   |   |   |   |   |
+    load3        | X |   |   |   |   |   |   |   |   |   |
+    muli1        |   | X | X | X | X |   |   |   |   |   |
+    addi0        |   |   |   |   |   | X |   |   |   |   |
+    addi1        |   |   |   |   |   |   | X |   |   |   |
+    addi2        | X |   |   |   |   |   |   |   |   |   |
+    cmpi0        |   | - |   |   |   |   |   |   |   |   |
+    cond_br2     |   | - |   |   |   |   |   |   |   |   |
+    cond_br3     |   |   |   |   |   |   |   | - |   |   |
+    cond_br4     |   | - |   |   |   |   |   |   |   |   |
+    cond_br5     |   | - |   |   |   |   |   |   |   |   |
+    cond_br6     |   | - |   |   |   |   |   |   |   |   |
+    cond_br7     |   |   |   |   |   |   |   | - |   |   |
+    cond_br8     |   | - |   |   |   |   |   |   |   |   |
+    cond_br9     |   | - |   |   |   |   |   |   |   |   |
+    --- Iteration 1 (offset +1) --------------------------
+    phi0         |   | - |   |   |   |   |   |   |   |   |
+    phi1         |   |   |   |   |   |   |   | - |   |   |
+    phi2         |   | - |   |   |   |   |   |   |   |   |
+    phi3         |   | - |   |   |   |   |   |   |   |   |
+    constant2    |   | - |   |   |   |   |   |   |   |   |
+    constant6    |   | - |   |   |   |   |   |   |   |   |
+    extui0       |   | - |   |   |   |   |   |   |   |   |
+    index_cast0  |   | - |   |   |   |   |   |   |   |   |
+    load0        |   | X |   |   |   |   |   |   |   |   |
+    extui1       |   | - |   |   |   |   |   |   |   |   |
+    index_cast1  |   | - |   |   |   |   |   |   |   |   |
+    load1        |   | X |   |   |   |   |   |   |   |   |
+    muli0        |   |   | X | X | X | X |   |   |   |   |
+    extui2       |   | - |   |   |   |   |   |   |   |   |
+    index_cast2  |   | - |   |   |   |   |   |   |   |   |
+    load2        |   | X |   |   |   |   |   |   |   |   |
+    extui3       |   | - |   |   |   |   |   |   |   |   |
+    index_cast3  |   | - |   |   |   |   |   |   |   |   |
+    load3        |   | X |   |   |   |   |   |   |   |   |
+    muli1        |   |   | X | X | X | X |   |   |   |   |
+    addi0        |   |   |   |   |   |   | X |   |   |   |
+    addi1        |   |   |   |   |   |   |   | X |   |   |
+    addi2        |   | X |   |   |   |   |   |   |   |   |
+    cmpi0        |   |   | - |   |   |   |   |   |   |   |
+    cond_br2     |   |   | - |   |   |   |   |   |   |   |
+    cond_br3     |   |   |   |   |   |   |   |   | - |   |
+    cond_br4     |   |   | - |   |   |   |   |   |   |   |
+    cond_br5     |   |   | - |   |   |   |   |   |   |   |
+    cond_br6     |   |   | - |   |   |   |   |   |   |   |
+    cond_br7     |   |   |   |   |   |   |   |   | - |   |
+    cond_br8     |   |   | - |   |   |   |   |   |   |   |
+    cond_br9     |   |   | - |   |   |   |   |   |   |   |
+    --- Iteration 2 (offset +2) --------------------------
+    phi0         |   |   | - |   |   |   |   |   |   |   |
+    phi1         |   |   |   |   |   |   |   |   | - |   |
+    phi2         |   |   | - |   |   |   |   |   |   |   |
+    phi3         |   |   | - |   |   |   |   |   |   |   |
+    constant2    |   |   | - |   |   |   |   |   |   |   |
+    constant6    |   |   | - |   |   |   |   |   |   |   |
+    extui0       |   |   | - |   |   |   |   |   |   |   |
+    index_cast0  |   |   | - |   |   |   |   |   |   |   |
+    load0        |   |   | X |   |   |   |   |   |   |   |
+    extui1       |   |   | - |   |   |   |   |   |   |   |
+    index_cast1  |   |   | - |   |   |   |   |   |   |   |
+    load1        |   |   | X |   |   |   |   |   |   |   |
+    muli0        |   |   |   | X | X | X | X |   |   |   |
+    extui2       |   |   | - |   |   |   |   |   |   |   |
+    index_cast2  |   |   | - |   |   |   |   |   |   |   |
+    load2        |   |   | X |   |   |   |   |   |   |   |
+    extui3       |   |   | - |   |   |   |   |   |   |   |
+    index_cast3  |   |   | - |   |   |   |   |   |   |   |
+    load3        |   |   | X |   |   |   |   |   |   |   |
+    muli1        |   |   |   | X | X | X | X |   |   |   |
+    addi0        |   |   |   |   |   |   |   | X |   |   |
+    addi1        |   |   |   |   |   |   |   |   | X |   |
+    addi2        |   |   | X |   |   |   |   |   |   |   |
+    cmpi0        |   |   |   | - |   |   |   |   |   |   |
+    cond_br2     |   |   |   | - |   |   |   |   |   |   |
+    cond_br3     |   |   |   |   |   |   |   |   |   | - |
+    cond_br4     |   |   |   | - |   |   |   |   |   |   |
+    cond_br5     |   |   |   | - |   |   |   |   |   |   |
+    cond_br6     |   |   |   | - |   |   |   |   |   |   |
+    cond_br7     |   |   |   |   |   |   |   |   |   | - |
+    cond_br8     |   |   |   | - |   |   |   |   |   |   |
+    cond_br9     |   |   |   | - |   |   |   |   |   |   |
+    -------------+---+---+---+---+---+---+---+---+---+---+
+
+  Basic Block #2
+    (Initiation Interval: 4)
+    -------------+---+---+---+---+---+---+---+---+
+        Operation| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+    -------------+---+---+---+---+---+---+---+---+
+    phi4         | - |   |   |   |   |   |   |   |
+    phi5         |   |   |   | - |   |   |   |   |
+    phi6         | - |   |   |   |   |   |   |   |
+    phi7         | - |   |   |   |   |   |   |   |
+    constant7    | - |   |   |   |   |   |   |   |
+    extui4       | - |   |   |   |   |   |   |   |
+    index_cast4  | - |   |   |   |   |   |   |   |
+    load4        | X |   |   |   |   |   |   |   |
+    extui5       | - |   |   |   |   |   |   |   |
+    index_cast5  | - |   |   |   |   |   |   |   |
+    load5        | X |   |   |   |   |   |   |   |
+    muli2        |   | X | X | X | X |   |   |   |
+    extui6       | - |   |   |   |   |   |   |   |
+    index_cast6  | - |   |   |   |   |   |   |   |
+    load6        | X |   |   |   |   |   |   |   |
+    extui7       | - |   |   |   |   |   |   |   |
+    index_cast7  | - |   |   |   |   |   |   |   |
+    load7        | X |   |   |   |   |   |   |   |
+    muli3        |   | X | X | X | X |   |   |   |
+    addi3        |   |   |   |   |   | X |   |   |
+    addi4        |   |   |   |   |   |   | X |   |
+    muli4        | X | X | X | X |   |   |   |   |
+    cmpi1        |   |   |   |   | - |   |   |   |
+    cond_br10    |   |   |   |   | - |   |   |   |
+    cond_br11    |   |   |   |   |   |   |   | - |
+    cond_br12    |   |   |   |   | - |   |   |   |
+    cond_br13    |   |   |   |   | - |   |   |   |
+    cond_br14    |   |   |   |   |   |   |   | - |
+    cond_br15    |   |   |   |   | - |   |   |   |
+    -------------+---+---+---+---+---+---+---+---+
+
+    Pipelined view (3 iterations, II=4)
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+        Operation| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+    phi4         | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    phi5         |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    phi6         | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    phi7         | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    constant7    | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui4       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast4  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load4        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui5       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast5  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load5        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    muli2        |   | X | X | X | X |   |   |   |   |   |   |   |   |   |   |   |
+    extui6       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast6  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load6        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui7       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast7  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load7        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    muli3        |   | X | X | X | X |   |   |   |   |   |   |   |   |   |   |   |
+    addi3        |   |   |   |   |   | X |   |   |   |   |   |   |   |   |   |   |
+    addi4        |   |   |   |   |   |   | X |   |   |   |   |   |   |   |   |   |
+    muli4        | X | X | X | X |   |   |   |   |   |   |   |   |   |   |   |   |
+    cmpi1        |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    cond_br10    |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    cond_br11    |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |   |
+    cond_br12    |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    cond_br13    |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    cond_br14    |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |   |
+    cond_br15    |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    --- Iteration 1 (offset +4) --------------------------------------------------
+    phi4         |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    phi5         |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |   |
+    phi6         |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    phi7         |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    constant7    |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    extui4       |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast4  |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    load4        |   |   |   |   | X |   |   |   |   |   |   |   |   |   |   |   |
+    extui5       |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast5  |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    load5        |   |   |   |   | X |   |   |   |   |   |   |   |   |   |   |   |
+    muli2        |   |   |   |   |   | X | X | X | X |   |   |   |   |   |   |   |
+    extui6       |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast6  |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    load6        |   |   |   |   | X |   |   |   |   |   |   |   |   |   |   |   |
+    extui7       |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast7  |   |   |   |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    load7        |   |   |   |   | X |   |   |   |   |   |   |   |   |   |   |   |
+    muli3        |   |   |   |   |   | X | X | X | X |   |   |   |   |   |   |   |
+    addi3        |   |   |   |   |   |   |   |   |   | X |   |   |   |   |   |   |
+    addi4        |   |   |   |   |   |   |   |   |   |   | X |   |   |   |   |   |
+    muli4        |   |   |   |   | X | X | X | X |   |   |   |   |   |   |   |   |
+    cmpi1        |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    cond_br10    |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    cond_br11    |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |   |
+    cond_br12    |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    cond_br13    |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    cond_br14    |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |   |
+    cond_br15    |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    --- Iteration 2 (offset +8) --------------------------------------------------
+    phi4         |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    phi5         |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |   |
+    phi6         |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    phi7         |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    constant7    |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    extui4       |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    index_cast4  |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    load4        |   |   |   |   |   |   |   |   | X |   |   |   |   |   |   |   |
+    extui5       |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    index_cast5  |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    load5        |   |   |   |   |   |   |   |   | X |   |   |   |   |   |   |   |
+    muli2        |   |   |   |   |   |   |   |   |   | X | X | X | X |   |   |   |
+    extui6       |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    index_cast6  |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    load6        |   |   |   |   |   |   |   |   | X |   |   |   |   |   |   |   |
+    extui7       |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    index_cast7  |   |   |   |   |   |   |   |   | - |   |   |   |   |   |   |   |
+    load7        |   |   |   |   |   |   |   |   | X |   |   |   |   |   |   |   |
+    muli3        |   |   |   |   |   |   |   |   |   | X | X | X | X |   |   |   |
+    addi3        |   |   |   |   |   |   |   |   |   |   |   |   |   | X |   |   |
+    addi4        |   |   |   |   |   |   |   |   |   |   |   |   |   |   | X |   |
+    muli4        |   |   |   |   |   |   |   |   | X | X | X | X |   |   |   |   |
+    cmpi1        |   |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |
+    cond_br10    |   |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |
+    cond_br11    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    cond_br12    |   |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |
+    cond_br13    |   |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |
+    cond_br14    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    cond_br15    |   |   |   |   |   |   |   |   |   |   |   |   | - |   |   |   |
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+
+  Basic Block #3
+    ---------+---+
+    Operation| 0 |
+    ---------+---+
+    return1  | - |
+    ---------+---+
+
+=== End of Scheduling Result ===
+

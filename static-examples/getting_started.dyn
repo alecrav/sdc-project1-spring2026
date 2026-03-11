@@ -1,0 +1,15 @@
+# Sample sequence of commands for the getting-started task
+
+# Indicate the path to Dynamatic's top-level directory here (leave unchanged if
+# running the frontend from the top-level directory)
+set-dynamatic-path .
+
+# Set the source file to run (kernel must have the same name as the filename,
+# without the extension)
+set-src static-examples/example_1/example_1.c
+
+# Run the getting-started flow
+getting_started
+
+# Exit the frontend
+exit
