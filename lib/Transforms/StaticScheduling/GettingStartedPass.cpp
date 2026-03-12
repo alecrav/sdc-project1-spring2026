@@ -13,6 +13,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "dynamatic/Dialect/CFX/CFX.h"
 #include "dynamatic/Support/CFG.h"
 #include "dynamatic/Transforms/StaticScheduling/StaticTimingConfig.h"
 #include "mlir/IR/BuiltinOps.h"
@@ -38,6 +39,15 @@ static void helloWorld() {
 static void printOperations(mlir::ModuleOp moduleOp,
                             const StaticTimingConfig &timingConfig) {
   // [START Student Assignment]
+  for (cfx::FuncOp funcOp : moduleOp.getOps<cfx::FuncOp>()) {
+    for (const CFXBasicBlock& bb : funcOp.getCFXBasicBlocks()) {
+      llvm::errs() << "=== Analyzing BB #" << bb.getID() << " ===\n";
+      for (Operation *op : bb) {
+        llvm::errs() << "Here is an op:\n";
+        op->dump();
+      }
+    }
+  }
   // [END Student Assignment]
 }
 

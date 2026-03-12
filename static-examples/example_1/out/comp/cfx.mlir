@@ -36,3 +36,4 @@ module {
     cfx.return start = %32, %31 {cfx.bb = 2 : i64, handshake.name = "return1"} : i32
   }
 }
+
