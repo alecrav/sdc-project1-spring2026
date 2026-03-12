@@ -45,6 +45,8 @@ static void printOperations(mlir::ModuleOp moduleOp,
       for (Operation *op : bb) {
         llvm::errs() << "Here is an op:\n";
         op->dump();
+        double latency = timingConfig.getLatency(op).value_or(0.0); 
+        llvm::errs() << "Latency" << latency << "\n"; 
       }
     }
   }
