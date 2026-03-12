@@ -29,6 +29,7 @@ using namespace dynamatic;
 
 static void helloWorld() {
   // [START Student Assignment]
+  llvm::errs() << "Hello, world!\n";
   // [END Student Assignment]
 }
 
