@@ -57,6 +57,33 @@ static void printOperations(mlir::ModuleOp moduleOp,
 // dependencies (excluding loop-carried dependencies).
 static void printDataAndMemoryDependencies(mlir::ModuleOp moduleOp) {
   // [START Student Assignment]
+  for (cfx::FuncOp funcOp : moduleOp.getOps<cfx::FuncOp>()) {
+    for (const CFXBasicBlock& bb : funcOp.getCFXBasicBlocks()) {
+      llvm::errs() << "=== Analyzing BB #" << bb.getID() << " ===\n";
+      for (Operation *op : bb) {
+        // iterate through predecessors
+        for (mlir::Value operandValue : op->getOperands()) {
+          // If the input value to an operation is a function argument,
+          // there is no explicit predecessor.
+          if (llvm::isa<BlockArgument>(operandValue) || llvm::isa<cfx::PhiOp>(op)) continue;
+          if (bb.hasOp(op)) {
+            Operation *predecessor = operandValue.getDefiningOp();
+            llvm::errs() << "Data dependency pair:" << "\n";
+            llvm::errs() << "Producer: " << *predecessor << "\n";
+            llvm::errs() << "Consumer: ";
+            op->dump();
+          }
+        }
+        for (auto [src, dst, dist] : bb.getMemoryDependencies()) {
+          if (dist == 0) {
+            llvm::errs() << "Memory dependency pair: " << "\n";
+            llvm::errs() << "Source" << src << "\n";
+            llvm::errs() << "Destination" << dst << "\n";
+          }
+        }
+      }
+    }
+  }
   // [END Student Assignment]
 }
 
