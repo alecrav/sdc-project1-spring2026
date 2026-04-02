@@ -1,0 +1,126 @@
+digraph ScheduledGraph {
+  newrank=true;
+  nodesep=0.5;
+  ranksep=0.75;
+  node [shape=box];
+  edge [penwidth=2];
+
+  subgraph cluster_example_11_bb0 {
+    label="example_11 :: BB#0";
+    style=rounded;
+
+
+    start0 [label="start0\n@0 (lat=0)"];
+    constant1 [label="constant1\n@0 (lat=0)"];
+    br1 [label="br1\n@0 (lat=0)"];
+    br2 [label="br2\n@0 (lat=0)"];
+    {rank=same; br1; br2;}
+    {rank=max; dot_1 [shape=point, width=0.08, color=blue]; dot_3 [shape=point, width=0.08, color=blue];}
+
+  }
+
+  start0 -> constant1 [color=purple];
+  constant1 -> br1;
+  start0 -> br2 [color=purple];
+
+  subgraph cluster_example_11_bb1 {
+    label="example_11 :: BB#1";
+    style=rounded;
+
+    phi0 [label="phi0\n@0 (lat=0)"];
+    phi1 [label="phi1\n@0 (lat=0)"];
+    constant2 [label="constant2\n@0 (lat=0)"];
+    constant5 [label="constant5\n@0 (lat=0)"];
+    extui0 [label="extui0\n@0 (lat=0)"];
+    index_cast0 [label="index_cast0\n@0 (lat=0)"];
+    load0 [label="load0\n@0 (lat=1)"];
+    index_cast1 [label="index_cast1\n@0 (lat=0)"];
+    load1 [label="load1\n@0 (lat=1)"];
+    extui1 [label="extui1\n@0 (lat=0)"];
+    index_cast2 [label="index_cast2\n@0 (lat=0)"];
+    load2 [label="load2\n@0 (lat=1)"];
+    muli0 [label="muli0\n@0 (lat=4)"];
+    extui2 [label="extui2\n@0 (lat=0)"];
+    index_cast3 [label="index_cast3\n@0 (lat=0)"];
+    store3 [label="store3\n@0 (lat=1)"];
+    addi0 [label="addi0\n@0 (lat=1)"];
+    cmpi0 [label="cmpi0\n@0 (lat=0)"];
+    cond_br1 [label="cond_br1\n@0 (lat=0)"];
+    cond_br2 [label="cond_br2\n@0 (lat=0)"];
+    cond_br3 [label="cond_br3\n@0 (lat=0)"];
+    {rank=min; dot_0 [shape=point, width=0.08, color=blue]; dot_2 [shape=point, width=0.08, color=blue];}
+    {rank=same; dot_6 [shape=point, width=0.08, color=blue]; dot_9 [shape=point, width=0.08, color=blue];}
+    dot_0 -> dot_6 [style=invis, minlen=2];
+    {rank=same; phi0; phi1;}
+    dot_6 -> phi0 [style=invis, minlen=2];
+    {rank=same; cond_br3;}
+    {rank=same; cond_br1; cond_br2;}
+    store3 -> cond_br3 [style=invis, minlen=3];
+    cond_br3 -> cond_br2 [style=invis];
+    cond_br2 -> dot_7 [style=invis, minlen=2];
+    {rank=same; dot_7 [shape=point, width=0.08, color=blue]; dot_10 [shape=point, width=0.08, color=blue];}
+    {rank=max; dot_5 [shape=point, width=0.08, color=blue];}
+    dot_7 -> dot_5 [style=invis, minlen=2];
+
+  }
+
+  phi1 -> constant2 [color=purple];
+  phi1 -> constant5 [color=purple];
+  phi0 -> extui0;
+  extui0 -> index_cast0;
+  index_cast0 -> load0;
+  load0 -> index_cast1;
+  index_cast1 -> load1;
+  phi0 -> extui1;
+  extui1 -> index_cast2;
+  index_cast2 -> load2;
+  load1 -> muli0;
+  load2 -> muli0;
+  phi0 -> extui2;
+  extui2 -> index_cast3;
+  muli0 -> store3;
+  index_cast3 -> store3;
+  phi0 -> addi0;
+  constant5 -> addi0;
+  addi0 -> cmpi0;
+  constant2 -> cmpi0;
+  cmpi0 -> cond_br1 [color=orange];
+  addi0 -> cond_br1;
+  cmpi0 -> cond_br2 [color=orange];
+  phi1 -> cond_br2 [color=purple];
+  cmpi0 -> cond_br3 [color=orange];
+  phi1 -> cond_br3 [color=purple];
+  load1 -> store3 [label="memdep<0>", style=dashed];
+  store3 -> load1 [label="memdep<1>", style=dashed];
+
+  subgraph cluster_example_11_bb2 {
+    label="example_11 :: BB#2";
+    style=rounded;
+
+    return1 [label="return1\n@0 (lat=0)"];
+    {rank=min; dot_4 [shape=point, width=0.08, color=blue];}
+
+  }
+
+
+  dot_8 [shape=point, width=0, height=0, style=invis];
+  dot_11 [shape=point, width=0, height=0, style=invis];
+  br1 -> dot_1 [color=blue];
+  dot_1 -> dot_0 [color=blue, minlen=4];
+  dot_0 -> phi0 [color=blue];
+  br2 -> dot_3 [color=blue];
+  dot_3 -> dot_2 [color=blue, minlen=4];
+  dot_2 -> phi1 [color=blue];
+  cond_br3 -> dot_5 [color=blue];
+  dot_5 -> dot_4 [color=blue, minlen=4];
+  dot_4 -> return1 [color=blue];
+  cond_br1 -> dot_7 [color=blue, style=dashed];
+  dot_8 -> dot_7 [color=blue, style=dashed, arrowhead=none];
+  dot_6 -> dot_8 [color=blue, style=dashed, arrowhead=none];
+  dot_6 -> phi0 [color=blue, style=dashed];
+  cond_br2 -> dot_10 [color=blue, style=dashed];
+  dot_11 -> dot_10 [color=blue, style=dashed, arrowhead=none];
+  dot_9 -> dot_11 [color=blue, style=dashed, arrowhead=none];
+  dot_9 -> phi1 [color=blue, style=dashed];
+
+}

@@ -1,0 +1,292 @@
+digraph ScheduledGraph {
+  newrank=true;
+  nodesep=0.5;
+  ranksep=0.75;
+  node [shape=box];
+  edge [penwidth=2];
+
+  subgraph cluster_example_2_bb0 {
+    label="example_2 :: BB#0";
+    style=rounded;
+
+    blockarg_4 [label="blockarg_4\n@0"];
+
+    start0 [label="start0\n@0 (lat=0)"];
+    constant1 [label="constant1\n@0 (lat=0)"];
+    br1 [label="br1\n@0 (lat=0)"];
+    br2 [label="br2\n@0 (lat=0)"];
+    br3 [label="br3\n@0 (lat=0)"];
+    br4 [label="br4\n@0 (lat=0)"];
+    {rank=same; br1; br2; br3; br4;}
+    {rank=max; dot_1 [shape=point, width=0.08, color=blue]; dot_3 [shape=point, width=0.08, color=blue]; dot_5 [shape=point, width=0.08, color=blue]; dot_7 [shape=point, width=0.08, color=blue];}
+
+  }
+
+  start0 -> constant1 [color=purple];
+  constant1 -> br1;
+  constant1 -> br2;
+  blockarg_4 -> br3;
+  start0 -> br4 [color=purple];
+
+  subgraph cluster_example_2_bb1 {
+    label="example_2 :: BB#1";
+    style=rounded;
+
+    phi0 [label="phi0\n@0 (lat=0)"];
+    phi1 [label="phi1\n@0 (lat=0)"];
+    phi2 [label="phi2\n@0 (lat=0)"];
+    phi3 [label="phi3\n@0 (lat=0)"];
+    constant2 [label="constant2\n@0 (lat=0)"];
+    constant6 [label="constant6\n@0 (lat=0)"];
+    extui0 [label="extui0\n@0 (lat=0)"];
+    index_cast0 [label="index_cast0\n@0 (lat=0)"];
+    load0 [label="load0\n@0 (lat=1)"];
+    extui1 [label="extui1\n@0 (lat=0)"];
+    index_cast1 [label="index_cast1\n@0 (lat=0)"];
+    load1 [label="load1\n@0 (lat=1)"];
+    muli0 [label="muli0\n@0 (lat=4)"];
+    extui2 [label="extui2\n@0 (lat=0)"];
+    index_cast2 [label="index_cast2\n@0 (lat=0)"];
+    load2 [label="load2\n@0 (lat=1)"];
+    extui3 [label="extui3\n@0 (lat=0)"];
+    index_cast3 [label="index_cast3\n@0 (lat=0)"];
+    load3 [label="load3\n@0 (lat=1)"];
+    muli1 [label="muli1\n@0 (lat=4)"];
+    addi0 [label="addi0\n@0 (lat=1)"];
+    addi1 [label="addi1\n@0 (lat=1)"];
+    addi2 [label="addi2\n@0 (lat=1)"];
+    cmpi0 [label="cmpi0\n@0 (lat=0)"];
+    cond_br2 [label="cond_br2\n@0 (lat=0)"];
+    cond_br3 [label="cond_br3\n@0 (lat=0)"];
+    cond_br4 [label="cond_br4\n@0 (lat=0)"];
+    cond_br5 [label="cond_br5\n@0 (lat=0)"];
+    cond_br6 [label="cond_br6\n@0 (lat=0)"];
+    cond_br7 [label="cond_br7\n@0 (lat=0)"];
+    cond_br8 [label="cond_br8\n@0 (lat=0)"];
+    cond_br9 [label="cond_br9\n@0 (lat=0)"];
+    {rank=min; dot_0 [shape=point, width=0.08, color=blue]; dot_2 [shape=point, width=0.08, color=blue]; dot_4 [shape=point, width=0.08, color=blue]; dot_6 [shape=point, width=0.08, color=blue];}
+    {rank=same; dot_20 [shape=point, width=0.08, color=blue]; dot_23 [shape=point, width=0.08, color=blue]; dot_26 [shape=point, width=0.08, color=blue]; dot_29 [shape=point, width=0.08, color=blue];}
+    dot_0 -> dot_20 [style=invis, minlen=2];
+    {rank=same; phi0; phi1; phi2; phi3;}
+    dot_20 -> phi0 [style=invis, minlen=2];
+    {rank=same; cond_br6; cond_br7; cond_br8; cond_br9;}
+    {rank=same; cond_br2; cond_br3; cond_br4; cond_br5;}
+    cond_br9 -> cond_br5 [style=invis];
+    cond_br5 -> dot_21 [style=invis, minlen=2];
+    {rank=same; dot_21 [shape=point, width=0.08, color=blue]; dot_24 [shape=point, width=0.08, color=blue]; dot_27 [shape=point, width=0.08, color=blue]; dot_30 [shape=point, width=0.08, color=blue];}
+    {rank=max; dot_9 [shape=point, width=0.08, color=blue]; dot_11 [shape=point, width=0.08, color=blue]; dot_13 [shape=point, width=0.08, color=blue]; dot_15 [shape=point, width=0.08, color=blue];}
+    dot_21 -> dot_9 [style=invis, minlen=2];
+
+  }
+
+  phi3 -> constant2 [color=purple];
+  phi3 -> constant6 [color=purple];
+  phi0 -> extui0;
+  extui0 -> index_cast0;
+  index_cast0 -> load0;
+  phi0 -> extui1;
+  extui1 -> index_cast1;
+  index_cast1 -> load1;
+  load0 -> muli0;
+  load1 -> muli0;
+  phi0 -> extui2;
+  extui2 -> index_cast2;
+  index_cast2 -> load2;
+  phi0 -> extui3;
+  extui3 -> index_cast3;
+  index_cast3 -> load3;
+  load2 -> muli1;
+  load3 -> muli1;
+  muli0 -> addi0;
+  muli1 -> addi0;
+  phi1 -> addi1;
+  addi0 -> addi1;
+  phi0 -> addi2;
+  constant6 -> addi2;
+  addi2 -> cmpi0;
+  constant2 -> cmpi0;
+  cmpi0 -> cond_br2 [color=orange];
+  addi2 -> cond_br2;
+  cmpi0 -> cond_br3 [color=orange];
+  addi1 -> cond_br3;
+  cmpi0 -> cond_br4 [color=orange];
+  phi2 -> cond_br4;
+  cmpi0 -> cond_br5 [color=orange];
+  phi3 -> cond_br5 [color=purple];
+  cmpi0 -> cond_br6 [color=orange];
+  constant6 -> cond_br6;
+  cmpi0 -> cond_br7 [color=orange];
+  addi1 -> cond_br7;
+  cmpi0 -> cond_br8 [color=orange];
+  phi2 -> cond_br8;
+  cmpi0 -> cond_br9 [color=orange];
+  phi3 -> cond_br9 [color=purple];
+
+  subgraph cluster_example_2_bb2 {
+    label="example_2 :: BB#2";
+    style=rounded;
+
+    phi4 [label="phi4\n@0 (lat=0)"];
+    phi5 [label="phi5\n@0 (lat=0)"];
+    phi6 [label="phi6\n@0 (lat=0)"];
+    phi7 [label="phi7\n@0 (lat=0)"];
+    constant7 [label="constant7\n@0 (lat=0)"];
+    extui4 [label="extui4\n@0 (lat=0)"];
+    index_cast4 [label="index_cast4\n@0 (lat=0)"];
+    load4 [label="load4\n@0 (lat=1)"];
+    extui5 [label="extui5\n@0 (lat=0)"];
+    index_cast5 [label="index_cast5\n@0 (lat=0)"];
+    load5 [label="load5\n@0 (lat=1)"];
+    muli2 [label="muli2\n@0 (lat=4)"];
+    extui6 [label="extui6\n@0 (lat=0)"];
+    index_cast6 [label="index_cast6\n@0 (lat=0)"];
+    load6 [label="load6\n@0 (lat=1)"];
+    extui7 [label="extui7\n@0 (lat=0)"];
+    index_cast7 [label="index_cast7\n@0 (lat=0)"];
+    load7 [label="load7\n@0 (lat=1)"];
+    muli3 [label="muli3\n@0 (lat=4)"];
+    addi3 [label="addi3\n@0 (lat=1)"];
+    addi4 [label="addi4\n@0 (lat=1)"];
+    muli4 [label="muli4\n@0 (lat=4)"];
+    cmpi1 [label="cmpi1\n@0 (lat=0)"];
+    cond_br10 [label="cond_br10\n@0 (lat=0)"];
+    cond_br11 [label="cond_br11\n@0 (lat=0)"];
+    cond_br12 [label="cond_br12\n@0 (lat=0)"];
+    cond_br13 [label="cond_br13\n@0 (lat=0)"];
+    cond_br14 [label="cond_br14\n@0 (lat=0)"];
+    cond_br15 [label="cond_br15\n@0 (lat=0)"];
+    {rank=min; dot_8 [shape=point, width=0.08, color=blue]; dot_10 [shape=point, width=0.08, color=blue]; dot_12 [shape=point, width=0.08, color=blue]; dot_14 [shape=point, width=0.08, color=blue];}
+    {rank=same; dot_32 [shape=point, width=0.08, color=blue]; dot_35 [shape=point, width=0.08, color=blue]; dot_38 [shape=point, width=0.08, color=blue]; dot_41 [shape=point, width=0.08, color=blue];}
+    dot_8 -> dot_32 [style=invis, minlen=2];
+    {rank=same; phi4; phi5; phi6; phi7;}
+    dot_32 -> phi4 [style=invis, minlen=2];
+    {rank=same; cond_br14; cond_br15;}
+    {rank=same; cond_br10; cond_br11; cond_br12; cond_br13;}
+    cond_br15 -> cond_br13 [style=invis];
+    cond_br13 -> dot_33 [style=invis, minlen=2];
+    {rank=same; dot_33 [shape=point, width=0.08, color=blue]; dot_36 [shape=point, width=0.08, color=blue]; dot_39 [shape=point, width=0.08, color=blue]; dot_42 [shape=point, width=0.08, color=blue];}
+    {rank=max; dot_17 [shape=point, width=0.08, color=blue]; dot_19 [shape=point, width=0.08, color=blue];}
+    dot_33 -> dot_17 [style=invis, minlen=2];
+
+  }
+
+  phi7 -> constant7 [color=purple];
+  phi4 -> extui4;
+  extui4 -> index_cast4;
+  index_cast4 -> load4;
+  phi4 -> extui5;
+  extui5 -> index_cast5;
+  index_cast5 -> load5;
+  load4 -> muli2;
+  load5 -> muli2;
+  phi4 -> extui6;
+  extui6 -> index_cast6;
+  index_cast6 -> load6;
+  phi4 -> extui7;
+  extui7 -> index_cast7;
+  index_cast7 -> load7;
+  load6 -> muli3;
+  load7 -> muli3;
+  muli2 -> addi3;
+  muli3 -> addi3;
+  phi5 -> addi4;
+  addi3 -> addi4;
+  phi4 -> muli4;
+  phi6 -> muli4;
+  muli4 -> cmpi1;
+  constant7 -> cmpi1;
+  cmpi1 -> cond_br10 [color=orange];
+  muli4 -> cond_br10;
+  cmpi1 -> cond_br11 [color=orange];
+  addi4 -> cond_br11;
+  cmpi1 -> cond_br12 [color=orange];
+  phi6 -> cond_br12;
+  cmpi1 -> cond_br13 [color=orange];
+  phi7 -> cond_br13 [color=purple];
+  cmpi1 -> cond_br14 [color=orange];
+  addi4 -> cond_br14;
+  cmpi1 -> cond_br15 [color=orange];
+  phi7 -> cond_br15 [color=purple];
+
+  subgraph cluster_example_2_bb3 {
+    label="example_2 :: BB#3";
+    style=rounded;
+
+    return1 [label="return1\n@0 (lat=0)"];
+    {rank=min; dot_16 [shape=point, width=0.08, color=blue]; dot_18 [shape=point, width=0.08, color=blue];}
+
+  }
+
+
+  dot_22 [shape=point, width=0, height=0, style=invis];
+  dot_25 [shape=point, width=0, height=0, style=invis];
+  dot_28 [shape=point, width=0, height=0, style=invis];
+  dot_31 [shape=point, width=0, height=0, style=invis];
+  dot_34 [shape=point, width=0, height=0, style=invis];
+  dot_37 [shape=point, width=0, height=0, style=invis];
+  dot_40 [shape=point, width=0, height=0, style=invis];
+  dot_43 [shape=point, width=0, height=0, style=invis];
+  br1 -> dot_1 [color=blue];
+  dot_1 -> dot_0 [color=blue, minlen=4];
+  dot_0 -> phi0 [color=blue];
+  br2 -> dot_3 [color=blue];
+  dot_3 -> dot_2 [color=blue, minlen=4];
+  dot_2 -> phi1 [color=blue];
+  br3 -> dot_5 [color=blue];
+  dot_5 -> dot_4 [color=blue, minlen=4];
+  dot_4 -> phi2 [color=blue];
+  br4 -> dot_7 [color=blue];
+  dot_7 -> dot_6 [color=blue, minlen=4];
+  dot_6 -> phi3 [color=blue];
+  cond_br6 -> dot_9 [color=blue];
+  dot_9 -> dot_8 [color=blue, minlen=4];
+  dot_8 -> phi4 [color=blue];
+  cond_br7 -> dot_11 [color=blue];
+  dot_11 -> dot_10 [color=blue, minlen=4];
+  dot_10 -> phi5 [color=blue];
+  cond_br8 -> dot_13 [color=blue];
+  dot_13 -> dot_12 [color=blue, minlen=4];
+  dot_12 -> phi6 [color=blue];
+  cond_br9 -> dot_15 [color=blue];
+  dot_15 -> dot_14 [color=blue, minlen=4];
+  dot_14 -> phi7 [color=blue];
+  cond_br15 -> dot_17 [color=blue];
+  dot_17 -> dot_16 [color=blue, minlen=4];
+  dot_16 -> return1 [color=blue];
+  cond_br14 -> dot_19 [color=blue];
+  dot_19 -> dot_18 [color=blue, minlen=4];
+  dot_18 -> return1 [color=blue];
+  cond_br2 -> dot_21 [color=blue, style=dashed];
+  dot_22 -> dot_21 [color=blue, style=dashed, arrowhead=none];
+  dot_20 -> dot_22 [color=blue, style=dashed, arrowhead=none];
+  dot_20 -> phi0 [color=blue, style=dashed];
+  cond_br3 -> dot_24 [color=blue, style=dashed];
+  dot_25 -> dot_24 [color=blue, style=dashed, arrowhead=none];
+  dot_23 -> dot_25 [color=blue, style=dashed, arrowhead=none];
+  dot_23 -> phi1 [color=blue, style=dashed];
+  cond_br4 -> dot_27 [color=blue, style=dashed];
+  dot_28 -> dot_27 [color=blue, style=dashed, arrowhead=none];
+  dot_26 -> dot_28 [color=blue, style=dashed, arrowhead=none];
+  dot_26 -> phi2 [color=blue, style=dashed];
+  cond_br5 -> dot_30 [color=blue, style=dashed];
+  dot_31 -> dot_30 [color=blue, style=dashed, arrowhead=none];
+  dot_29 -> dot_31 [color=blue, style=dashed, arrowhead=none];
+  dot_29 -> phi3 [color=blue, style=dashed];
+  cond_br10 -> dot_33 [color=blue, style=dashed];
+  dot_34 -> dot_33 [color=blue, style=dashed, arrowhead=none];
+  dot_32 -> dot_34 [color=blue, style=dashed, arrowhead=none];
+  dot_32 -> phi4 [color=blue, style=dashed];
+  cond_br11 -> dot_36 [color=blue, style=dashed];
+  dot_37 -> dot_36 [color=blue, style=dashed, arrowhead=none];
+  dot_35 -> dot_37 [color=blue, style=dashed, arrowhead=none];
+  dot_35 -> phi5 [color=blue, style=dashed];
+  cond_br12 -> dot_39 [color=blue, style=dashed];
+  dot_40 -> dot_39 [color=blue, style=dashed, arrowhead=none];
+  dot_38 -> dot_40 [color=blue, style=dashed, arrowhead=none];
+  dot_38 -> phi6 [color=blue, style=dashed];
+  cond_br13 -> dot_42 [color=blue, style=dashed];
+  dot_43 -> dot_42 [color=blue, style=dashed, arrowhead=none];
+  dot_41 -> dot_43 [color=blue, style=dashed, arrowhead=none];
+  dot_41 -> phi7 [color=blue, style=dashed];
+
+}

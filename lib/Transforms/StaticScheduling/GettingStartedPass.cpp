@@ -74,12 +74,12 @@ static void printDataAndMemoryDependencies(mlir::ModuleOp moduleOp) {
             op->dump();
           }
         }
-        for (auto [src, dst, dist] : bb.getMemoryDependencies()) {
-          if (dist == 0) {
-            llvm::errs() << "Memory dependency pair: " << "\n";
-            llvm::errs() << "Source" << src << "\n";
-            llvm::errs() << "Destination" << dst << "\n";
-          }
+      }
+      for (auto [src, dst, dist] : bb.getMemoryDependencies()) {
+        if (dist == 0) {
+          llvm::errs() << "Memory dependency pair: " << "\n";
+          llvm::errs() << "Source" << src << "\n";
+          llvm::errs() << "Destination" << dst << "\n";
         }
       }
     }
@@ -90,6 +90,24 @@ static void printDataAndMemoryDependencies(mlir::ModuleOp moduleOp) {
 // Print out all loop-carried data and memory dependencies.
 static void printLoopCarriedDependencies(mlir::ModuleOp moduleOp) {
   // [START Student Assignment]
+  for (cfx::FuncOp funcOp : moduleOp.getOps<cfx::FuncOp>()) {
+    for (const CFXBasicBlock& bb : funcOp.getCFXBasicBlocks()) {
+      llvm::errs() << "=== Analyzing BB #" << bb.getID() << " ===\n";
+      for (auto [pred, succ] : bb.getSelfLoopBackEdges()) {
+        llvm::errs() << "Loop carried dependency: " << "\n";
+        llvm::errs() << "Predecessor: " << *pred << "\n";
+        llvm::errs() << "Successor: " << *succ << "\n";
+      }
+      
+      for (auto [src, dst, dist] : bb.getMemoryDependencies()) {
+        if (dist > 0) {
+          llvm::errs() << "Loop carried dependency: " << "\n";
+          llvm::errs() << "Source: " << src << "\n";
+          llvm::errs() << "Destination: " << dst << "\n";
+        }  
+      }  
+    }
+  }
   // [END Student Assignment]
 }
 

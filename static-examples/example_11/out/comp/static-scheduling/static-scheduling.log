@@ -1,0 +1,82 @@
+
+# ====================== #
+# Static Scheduling Result #
+# ====================== #
+
+Operation: start0 scheduled at time: 0
+Operation: constant1 scheduled at time: 0
+Operation: br1 scheduled at time: 0
+Operation: br2 scheduled at time: 0
+Operation: phi0 scheduled at time: 0
+Operation: phi1 scheduled at time: 0
+Operation: constant2 scheduled at time: 0
+Operation: constant5 scheduled at time: 0
+Operation: extui0 scheduled at time: 0
+Operation: index_cast0 scheduled at time: 0
+Operation: load0 scheduled at time: 0
+Operation: index_cast1 scheduled at time: 0
+Operation: load1 scheduled at time: 0
+Operation: extui1 scheduled at time: 0
+Operation: index_cast2 scheduled at time: 0
+Operation: load2 scheduled at time: 0
+Operation: muli0 scheduled at time: 0
+Operation: extui2 scheduled at time: 0
+Operation: index_cast3 scheduled at time: 0
+Operation: store3 scheduled at time: 0
+Operation: addi0 scheduled at time: 0
+Operation: cmpi0 scheduled at time: 0
+Operation: cond_br1 scheduled at time: 0
+Operation: cond_br2 scheduled at time: 0
+Operation: cond_br3 scheduled at time: 0
+Operation: return1 scheduled at time: 0
+
+=== Scheduling Result ===
+Function: example_11
+  Basic Block #0
+    -----------+---+
+      Operation| 0 |
+    -----------+---+
+    arg_0      | - |
+    arg_1      | - |
+    start0     | - |
+    constant1  | - |
+    br1        | - |
+    br2        | - |
+    -----------+---+
+
+  Basic Block #1
+    -------------+---+
+        Operation| 0 |
+    -------------+---+
+    phi0         | - |
+    phi1         | - |
+    constant2    | - |
+    constant5    | - |
+    extui0       | - |
+    index_cast0  | - |
+    load0        | X |
+    index_cast1  | - |
+    load1        | X |
+    extui1       | - |
+    index_cast2  | - |
+    load2        | X |
+    muli0        | X |
+    extui2       | - |
+    index_cast3  | - |
+    store3       | X |
+    addi0        | X |
+    cmpi0        | - |
+    cond_br1     | - |
+    cond_br2     | - |
+    cond_br3     | - |
+    -------------+---+
+
+  Basic Block #2
+    ---------+---+
+    Operation| 0 |
+    ---------+---+
+    return1  | - |
+    ---------+---+
+
+=== End of Scheduling Result ===
+

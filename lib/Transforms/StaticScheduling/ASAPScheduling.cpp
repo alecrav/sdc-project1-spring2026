@@ -17,9 +17,12 @@
 namespace dynamatic {
 
 // Define the optimization function for ASAPScheduling
-mlir::LogicalResult
-ASAPScheduling::createOptimizationObjective(mlir::ModuleOp moduleOp) {
+mlir::LogicalResult ASAPScheduling::createOptimizationObjective(mlir::ModuleOp moduleOp) {
   // [START Student Assignment]
+  LinExpr objective;
+
+  
+  this->model->SetMinimizeObjective();
   // [END Student Assignment]
   return success();
 }
