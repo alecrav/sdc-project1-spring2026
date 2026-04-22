@@ -27,6 +27,24 @@ namespace dynamatic {
 mlir::LogicalResult
 PipelinedScheduling::createOptimizationObjective(mlir::ModuleOp moduleOp) {
   // [START Student Assignment]
+  // Check model is created
+  if (!model) {
+    llvm::errs() << "MILP model is not initialized.\n";
+    return mlir::failure();
+  }
+  LinExpr objective;
+
+  // Create scheduling variables for each operation in the module
+  for (auto funcOp : moduleOp.getOps<cfx::FuncOp>()) {
+    for (auto &block : funcOp.getCFXBasicBlocks()) {
+      for (auto *op : block) {
+        CPVar schedVar = this->operationSchedulingVariables.lookup(op);
+        objective -= schedVar;
+      }
+    }
+  }
+
+  this->model->setMaximizeObjective(objective);
   // [END Student Assignment]
   return success();
 }
@@ -36,6 +54,28 @@ mlir::LogicalResult PipelinedScheduling::createPipelineConstraints(
     const CFXBasicBlock &bb, unsigned ii,
     const StaticTimingConfig &timingConfig) {
   // [START Student Assignment]
+  for (auto [branchOp, phiOp] : bb.getSelfLoopBackEdges()) {
+    // CPVar
+    CPVar sv_branch = this->operationSchedulingVariables.lookup(branchOp); 
+    CPVar sv_phi = this->operationSchedulingVariables.lookup(phiOp);
+    // latency
+    int lat_branch = int(timingConfig.getLatency(branchOp).value_or(0.0));
+    
+    // add constraint
+    this->model->addConstr(sv_branch + lat_branch <= sv_phi + ii);
+  }
+    
+  for (auto [src, dst, dist] : bb.getMemoryDependencies()) {
+    if (dist == 0) continue; 
+    CPVar sv_dst = this->operationSchedulingVariables.lookup(dst);
+    // predecessor operator scheduling variable
+    int pred_lat = int(timingConfig.getLatency(src).value_or(0.0));
+    CPVar sv_src = this->operationSchedulingVariables.lookup(src);
+      
+    // add constraint
+    this->model->addConstr(sv_src + pred_lat <= sv_dst + ii);
+  }
+  
   // [END Student Assignment]
   return mlir::success();
 }

@@ -19,10 +19,23 @@ namespace dynamatic {
 // Define the optimization function for ASAPScheduling
 mlir::LogicalResult ASAPScheduling::createOptimizationObjective(mlir::ModuleOp moduleOp) {
   // [START Student Assignment]
+  // Check model is created
+  if (!model) {
+    llvm::errs() << "MILP model is not initialized.\n";
+    return mlir::failure();
+  }
   LinExpr objective;
 
-  
-  this->model->SetMinimizeObjective();
+  // Create scheduling variables for each operation in the module
+  for (auto funcOp : moduleOp.getOps<cfx::FuncOp>()) {
+    for (auto &block : funcOp.getCFXBasicBlocks()) {
+      for (auto *op : block) {
+        CPVar schedVar = this->operationSchedulingVariables.lookup(op);
+        objective -= schedVar;
+      }
+    }
+  }
+  this->model->setMaximizeObjective(objective);
   // [END Student Assignment]
   return success();
 }

@@ -30,43 +30,43 @@ digraph ScheduledGraph {
     style=rounded;
 
     phi0 [label="phi0\n@0 (lat=0)"];
-    phi1 [label="phi1\n@0 (lat=0)"];
-    phi2 [label="phi2\n@0 (lat=0)"];
-    constant2 [label="constant2\n@0 (lat=0)"];
-    constant5 [label="constant5\n@0 (lat=0)"];
-    extui0 [label="extui0\n@0 (lat=0)"];
-    index_cast0 [label="index_cast0\n@0 (lat=0)"];
-    load0 [label="load0\n@0 (lat=1)"];
+    phi1 [label="phi1\n@6 (lat=0)"];
+    phi2 [label="phi2\n@6 (lat=0)"];
+    constant2 [label="constant2\n@7 (lat=0)"];
+    constant5 [label="constant5\n@6 (lat=0)"];
+    extui0 [label="extui0\n@4 (lat=0)"];
+    index_cast0 [label="index_cast0\n@4 (lat=0)"];
+    load0 [label="load0\n@4 (lat=1)"];
     extui1 [label="extui1\n@0 (lat=0)"];
     index_cast1 [label="index_cast1\n@0 (lat=0)"];
     load1 [label="load1\n@0 (lat=1)"];
     extui2 [label="extui2\n@0 (lat=0)"];
     index_cast2 [label="index_cast2\n@0 (lat=0)"];
     load2 [label="load2\n@0 (lat=1)"];
-    extui3 [label="extui3\n@0 (lat=0)"];
-    index_cast3 [label="index_cast3\n@0 (lat=0)"];
-    load3 [label="load3\n@0 (lat=1)"];
+    extui3 [label="extui3\n@4 (lat=0)"];
+    index_cast3 [label="index_cast3\n@4 (lat=0)"];
+    load3 [label="load3\n@4 (lat=1)"];
     extui4 [label="extui4\n@0 (lat=0)"];
     index_cast4 [label="index_cast4\n@0 (lat=0)"];
     load4 [label="load4\n@0 (lat=1)"];
     extui5 [label="extui5\n@0 (lat=0)"];
     index_cast5 [label="index_cast5\n@0 (lat=0)"];
     load5 [label="load5\n@0 (lat=1)"];
-    muli0 [label="muli0\n@0 (lat=4)"];
-    addi0 [label="addi0\n@0 (lat=1)"];
-    extui6 [label="extui6\n@0 (lat=0)"];
-    index_cast6 [label="index_cast6\n@0 (lat=0)"];
-    store6 [label="store6\n@0 (lat=1)"];
-    muli1 [label="muli1\n@0 (lat=4)"];
-    addi1 [label="addi1\n@0 (lat=1)"];
-    addi2 [label="addi2\n@0 (lat=1)"];
-    addi3 [label="addi3\n@0 (lat=1)"];
-    cmpi0 [label="cmpi0\n@0 (lat=0)"];
-    cond_br1 [label="cond_br1\n@0 (lat=0)"];
-    cond_br2 [label="cond_br2\n@0 (lat=0)"];
-    cond_br3 [label="cond_br3\n@0 (lat=0)"];
-    cond_br4 [label="cond_br4\n@0 (lat=0)"];
-    cond_br5 [label="cond_br5\n@0 (lat=0)"];
+    muli0 [label="muli0\n@1 (lat=4)"];
+    addi0 [label="addi0\n@5 (lat=1)"];
+    extui6 [label="extui6\n@6 (lat=0)"];
+    index_cast6 [label="index_cast6\n@6 (lat=0)"];
+    store6 [label="store6\n@6 (lat=1)"];
+    muli1 [label="muli1\n@1 (lat=4)"];
+    addi1 [label="addi1\n@5 (lat=1)"];
+    addi2 [label="addi2\n@6 (lat=1)"];
+    addi3 [label="addi3\n@6 (lat=1)"];
+    cmpi0 [label="cmpi0\n@7 (lat=0)"];
+    cond_br1 [label="cond_br1\n@7 (lat=0)"];
+    cond_br2 [label="cond_br2\n@7 (lat=0)"];
+    cond_br3 [label="cond_br3\n@7 (lat=0)"];
+    cond_br4 [label="cond_br4\n@7 (lat=0)"];
+    cond_br5 [label="cond_br5\n@7 (lat=0)"];
     {rank=min; dot_0 [shape=point, width=0.08, color=blue]; dot_2 [shape=point, width=0.08, color=blue]; dot_4 [shape=point, width=0.08, color=blue];}
     {rank=same; dot_10 [shape=point, width=0.08, color=blue]; dot_13 [shape=point, width=0.08, color=blue]; dot_16 [shape=point, width=0.08, color=blue];}
     dot_0 -> dot_10 [style=invis, minlen=2];
@@ -136,7 +136,7 @@ digraph ScheduledGraph {
     label="example_4 :: BB#2";
     style=rounded;
 
-    return1 [label="return1\n@0 (lat=0)"];
+    return1 [label="return1\n@7 (lat=0)"];
     {rank=min; dot_6 [shape=point, width=0.08, color=blue]; dot_8 [shape=point, width=0.08, color=blue];}
 
   }

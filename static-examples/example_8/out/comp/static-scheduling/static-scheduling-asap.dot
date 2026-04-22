@@ -39,28 +39,28 @@ digraph ScheduledGraph {
     extui0 [label="extui0\n@0 (lat=0)"];
     index_cast0 [label="index_cast0\n@0 (lat=0)"];
     load0 [label="load0\n@0 (lat=1)"];
-    muli0 [label="muli0\n@0 (lat=4)"];
+    muli0 [label="muli0\n@1 (lat=4)"];
     shli1 [label="shli1\n@0 (lat=0)"];
     extui1 [label="extui1\n@0 (lat=0)"];
     index_cast1 [label="index_cast1\n@0 (lat=0)"];
-    store1 [label="store1\n@0 (lat=1)"];
+    store1 [label="store1\n@5 (lat=1)"];
     shli2 [label="shli2\n@0 (lat=0)"];
     ori0 [label="ori0\n@0 (lat=0)"];
     extui2 [label="extui2\n@0 (lat=0)"];
     index_cast2 [label="index_cast2\n@0 (lat=0)"];
     load2 [label="load2\n@0 (lat=1)"];
-    muli1 [label="muli1\n@0 (lat=4)"];
+    muli1 [label="muli1\n@1 (lat=4)"];
     shli3 [label="shli3\n@0 (lat=0)"];
     ori1 [label="ori1\n@0 (lat=0)"];
     extui3 [label="extui3\n@0 (lat=0)"];
     index_cast3 [label="index_cast3\n@0 (lat=0)"];
-    store3 [label="store3\n@0 (lat=1)"];
+    store3 [label="store3\n@5 (lat=1)"];
     addi0 [label="addi0\n@0 (lat=1)"];
-    cmpi0 [label="cmpi0\n@0 (lat=0)"];
-    cond_br1 [label="cond_br1\n@0 (lat=0)"];
-    cond_br2 [label="cond_br2\n@0 (lat=0)"];
-    cond_br3 [label="cond_br3\n@0 (lat=0)"];
-    cond_br4 [label="cond_br4\n@0 (lat=0)"];
+    cmpi0 [label="cmpi0\n@1 (lat=0)"];
+    cond_br1 [label="cond_br1\n@1 (lat=0)"];
+    cond_br2 [label="cond_br2\n@1 (lat=0)"];
+    cond_br3 [label="cond_br3\n@1 (lat=0)"];
+    cond_br4 [label="cond_br4\n@1 (lat=0)"];
     {rank=min; dot_0 [shape=point, width=0.08, color=blue]; dot_2 [shape=point, width=0.08, color=blue]; dot_4 [shape=point, width=0.08, color=blue];}
     {rank=same; dot_8 [shape=point, width=0.08, color=blue]; dot_11 [shape=point, width=0.08, color=blue]; dot_14 [shape=point, width=0.08, color=blue];}
     dot_0 -> dot_8 [style=invis, minlen=2];
@@ -129,7 +129,7 @@ digraph ScheduledGraph {
     label="example_8 :: BB#2";
     style=rounded;
 
-    return1 [label="return1\n@0 (lat=0)"];
+    return1 [label="return1\n@1 (lat=0)"];
     {rank=min; dot_6 [shape=point, width=0.08, color=blue];}
 
   }

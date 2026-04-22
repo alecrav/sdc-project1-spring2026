@@ -13,10 +13,10 @@ set-src static-examples/example_3/example_3.c
 static_hls --scheduling-algorithm asap
 
 set-src static-examples/example_4/example_4.c
-static_hls --scheduling-algorithm asap
+static_hls --scheduling-algorithm alap
 
 set-src static-examples/example_5/example_5.c
-static_hls --scheduling-algorithm asap
+static_hls --scheduling-algorithm asap_resource_constrained
 
 set-src static-examples/example_6/example_6.c
 static_hls --scheduling-algorithm asap
@@ -31,7 +31,7 @@ set-src static-examples/example_9/example_9.c
 static_hls --scheduling-algorithm asap
 
 set-src static-examples/example_10/example_10.c
-static_hls --scheduling-algorithm asap
+static_hls --scheduling-algorithm pipelined
 
 set-src static-examples/example_11/example_11.c
 static_hls --scheduling-algorithm asap

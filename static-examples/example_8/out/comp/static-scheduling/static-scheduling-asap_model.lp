@@ -1,6 +1,56 @@
 Maximize
-
+- sv_addi0 - sv_br1 - sv_br2 - sv_br3 - sv_cmpi0 - sv_cond_br1 - sv_cond_br2 - sv_cond_br3 - sv_cond_br4 - sv_constant1 - sv_constant2 - sv_constant5 - sv_extui0 - sv_extui1 - sv_extui2 - sv_extui3 - sv_index_cast0 - sv_index_cast1 - sv_index_cast2 - sv_index_cast3 - sv_load0 - sv_load2 - sv_muli0 - sv_muli1 - sv_ori0 - sv_ori1 - sv_phi0 - sv_phi1 - sv_phi2 - sv_return1 - sv_shli0 - sv_shli1 - sv_shli2 - sv_shli3 - sv_start0 - sv_store1 - sv_store3
 Subject to
+- sv_constant1 + sv_start0 <= 0.000000
+- sv_br1 + sv_constant1 <= 0.000000
+- sv_br3 + sv_start0 <= 0.000000
+- sv_constant2 + sv_phi2 <= 0.000000
+- sv_constant5 + sv_phi2 <= 0.000000
+sv_phi0 - sv_shli0 <= 0.000000
+sv_constant5 - sv_shli0 <= 0.000000
+- sv_extui0 + sv_shli0 <= 0.000000
+sv_extui0 - sv_index_cast0 <= 0.000000
+sv_index_cast0 - sv_load0 <= 0.000000
+sv_load0 - sv_muli0 <=  -1.000000
+- sv_muli0 + sv_phi1 <= 0.000000
+sv_phi0 - sv_shli1 <= 0.000000
+sv_constant5 - sv_shli1 <= 0.000000
+- sv_extui1 + sv_shli1 <= 0.000000
+sv_extui1 - sv_index_cast1 <= 0.000000
+sv_muli0 - sv_store1 <=  -4.000000
+sv_index_cast1 - sv_store1 <= 0.000000
+sv_phi0 - sv_shli2 <= 0.000000
+sv_constant5 - sv_shli2 <= 0.000000
+- sv_ori0 + sv_shli2 <= 0.000000
+sv_constant5 - sv_ori0 <= 0.000000
+- sv_extui2 + sv_ori0 <= 0.000000
+sv_extui2 - sv_index_cast2 <= 0.000000
+sv_index_cast2 - sv_load2 <= 0.000000
+sv_load2 - sv_muli1 <=  -1.000000
+- sv_muli1 + sv_phi1 <= 0.000000
+sv_phi0 - sv_shli3 <= 0.000000
+sv_constant5 - sv_shli3 <= 0.000000
+- sv_ori1 + sv_shli3 <= 0.000000
+sv_constant5 - sv_ori1 <= 0.000000
+- sv_extui3 + sv_ori1 <= 0.000000
+sv_extui3 - sv_index_cast3 <= 0.000000
+sv_muli1 - sv_store3 <=  -4.000000
+sv_index_cast3 - sv_store3 <= 0.000000
+- sv_addi0 + sv_phi0 <= 0.000000
+- sv_addi0 + sv_constant5 <= 0.000000
+sv_addi0 - sv_cmpi0 <=  -1.000000
+- sv_cmpi0 + sv_constant2 <= 0.000000
+sv_cmpi0 - sv_cond_br1 <= 0.000000
+sv_addi0 - sv_cond_br1 <=  -1.000000
+sv_cmpi0 - sv_cond_br2 <= 0.000000
+- sv_cond_br2 + sv_phi1 <= 0.000000
+sv_cmpi0 - sv_cond_br3 <= 0.000000
+- sv_cond_br3 + sv_phi2 <= 0.000000
+sv_cmpi0 - sv_cond_br4 <= 0.000000
+- sv_cond_br4 + sv_phi2 <= 0.000000
+sv_load0 - sv_store1 <=  -1.000000
+sv_load2 - sv_store3 <=  -1.000000
+sv_cond_br4 - sv_return1 <= 0.000000
 
 
 sv_addi0 >= 0.000000

@@ -4,6 +4,6 @@
 set-dynamatic-path .
 
 set-src static-examples/example_1/example_1.c
-static_hls --scheduling-algorithm asap
+static_hls --scheduling-algorithm alap
 
 exit

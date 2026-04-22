@@ -43,17 +43,17 @@ digraph ScheduledGraph {
     extui1 [label="extui1\n@0 (lat=0)"];
     index_cast1 [label="index_cast1\n@0 (lat=0)"];
     load1 [label="load1\n@0 (lat=1)"];
-    mulf0 [label="mulf0\n@0 (lat=5)"];
-    mulf1 [label="mulf1\n@0 (lat=5)"];
+    mulf0 [label="mulf0\n@1 (lat=5)"];
+    mulf1 [label="mulf1\n@6 (lat=5)"];
     addi0 [label="addi0\n@0 (lat=1)"];
-    cmpf0 [label="cmpf0\n@0 (lat=1)"];
-    cmpi0 [label="cmpi0\n@0 (lat=0)"];
-    andi0 [label="andi0\n@0 (lat=0)"];
-    cond_br1 [label="cond_br1\n@0 (lat=0)"];
-    cond_br2 [label="cond_br2\n@0 (lat=0)"];
-    cond_br3 [label="cond_br3\n@0 (lat=0)"];
-    cond_br4 [label="cond_br4\n@0 (lat=0)"];
-    cond_br5 [label="cond_br5\n@0 (lat=0)"];
+    cmpf0 [label="cmpf0\n@11 (lat=1)"];
+    cmpi0 [label="cmpi0\n@1 (lat=0)"];
+    andi0 [label="andi0\n@12 (lat=0)"];
+    cond_br1 [label="cond_br1\n@12 (lat=0)"];
+    cond_br2 [label="cond_br2\n@12 (lat=0)"];
+    cond_br3 [label="cond_br3\n@12 (lat=0)"];
+    cond_br4 [label="cond_br4\n@12 (lat=0)"];
+    cond_br5 [label="cond_br5\n@12 (lat=0)"];
     {rank=min; dot_0 [shape=point, width=0.08, color=blue]; dot_2 [shape=point, width=0.08, color=blue]; dot_4 [shape=point, width=0.08, color=blue];}
     {rank=same; dot_10 [shape=point, width=0.08, color=blue]; dot_13 [shape=point, width=0.08, color=blue]; dot_16 [shape=point, width=0.08, color=blue];}
     dot_0 -> dot_10 [style=invis, minlen=2];
@@ -105,7 +105,7 @@ digraph ScheduledGraph {
     label="example_12 :: BB#2";
     style=rounded;
 
-    return1 [label="return1\n@0 (lat=0)"];
+    return1 [label="return1\n@12 (lat=0)"];
     {rank=min; dot_6 [shape=point, width=0.08, color=blue]; dot_8 [shape=point, width=0.08, color=blue];}
 
   }

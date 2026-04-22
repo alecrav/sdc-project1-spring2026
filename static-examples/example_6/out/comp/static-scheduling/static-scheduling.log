@@ -17,38 +17,38 @@ Operation: load0 scheduled at time: 0
 Operation: extui1 scheduled at time: 0
 Operation: index_cast1 scheduled at time: 0
 Operation: load1 scheduled at time: 0
-Operation: muli0 scheduled at time: 0
+Operation: muli0 scheduled at time: 1
 Operation: extui2 scheduled at time: 0
 Operation: index_cast2 scheduled at time: 0
-Operation: store2 scheduled at time: 0
+Operation: store2 scheduled at time: 5
 Operation: extui3 scheduled at time: 0
 Operation: index_cast3 scheduled at time: 0
 Operation: load3 scheduled at time: 0
 Operation: extui4 scheduled at time: 0
 Operation: index_cast4 scheduled at time: 0
 Operation: load4 scheduled at time: 0
-Operation: muli1 scheduled at time: 0
+Operation: muli1 scheduled at time: 1
 Operation: extui5 scheduled at time: 0
 Operation: index_cast5 scheduled at time: 0
 Operation: load5 scheduled at time: 0
-Operation: muli2 scheduled at time: 0
+Operation: muli2 scheduled at time: 5
 Operation: extui6 scheduled at time: 0
 Operation: index_cast6 scheduled at time: 0
 Operation: load6 scheduled at time: 0
 Operation: extui7 scheduled at time: 0
 Operation: index_cast7 scheduled at time: 0
 Operation: load7 scheduled at time: 0
-Operation: addi0 scheduled at time: 0
-Operation: muli3 scheduled at time: 0
+Operation: addi0 scheduled at time: 1
+Operation: muli3 scheduled at time: 9
 Operation: extui8 scheduled at time: 0
 Operation: index_cast8 scheduled at time: 0
-Operation: store8 scheduled at time: 0
+Operation: store8 scheduled at time: 13
 Operation: addi1 scheduled at time: 0
-Operation: cmpi0 scheduled at time: 0
-Operation: cond_br1 scheduled at time: 0
-Operation: cond_br2 scheduled at time: 0
-Operation: cond_br3 scheduled at time: 0
-Operation: return1 scheduled at time: 0
+Operation: cmpi0 scheduled at time: 1
+Operation: cond_br1 scheduled at time: 1
+Operation: cond_br2 scheduled at time: 1
+Operation: cond_br3 scheduled at time: 1
+Operation: return1 scheduled at time: 1
 
 === Scheduling Result ===
 Function: example_6
@@ -71,58 +71,58 @@ Function: example_6
     -----------+---+
 
   Basic Block #1
-    -------------+---+
-        Operation| 0 |
-    -------------+---+
-    phi0         | - |
-    phi1         | - |
-    constant2    | - |
-    constant5    | - |
-    extui0       | - |
-    index_cast0  | - |
-    load0        | X |
-    extui1       | - |
-    index_cast1  | - |
-    load1        | X |
-    muli0        | X |
-    extui2       | - |
-    index_cast2  | - |
-    store2       | X |
-    extui3       | - |
-    index_cast3  | - |
-    load3        | X |
-    extui4       | - |
-    index_cast4  | - |
-    load4        | X |
-    muli1        | X |
-    extui5       | - |
-    index_cast5  | - |
-    load5        | X |
-    muli2        | X |
-    extui6       | - |
-    index_cast6  | - |
-    load6        | X |
-    extui7       | - |
-    index_cast7  | - |
-    load7        | X |
-    addi0        | X |
-    muli3        | X |
-    extui8       | - |
-    index_cast8  | - |
-    store8       | X |
-    addi1        | X |
-    cmpi0        | - |
-    cond_br1     | - |
-    cond_br2     | - |
-    cond_br3     | - |
-    -------------+---+
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+        Operation| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+    phi0         | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    phi1         | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    constant2    | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    constant5    | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui0       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast0  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load0        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui1       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast1  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load1        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    muli0        |   | X | X | X | X |   |   |   |   |   |   |   |   |   |
+    extui2       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast2  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    store2       |   |   |   |   |   | X |   |   |   |   |   |   |   |   |
+    extui3       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast3  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load3        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui4       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast4  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load4        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    muli1        |   | X | X | X | X |   |   |   |   |   |   |   |   |   |
+    extui5       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast5  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load5        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    muli2        |   |   |   |   |   | X | X | X | X |   |   |   |   |   |
+    extui6       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast6  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load6        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui7       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast7  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    load7        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    addi0        |   | X |   |   |   |   |   |   |   |   |   |   |   |   |
+    muli3        |   |   |   |   |   |   |   |   |   | X | X | X | X |   |
+    extui8       | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast8  | - |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    store8       |   |   |   |   |   |   |   |   |   |   |   |   |   | X |
+    addi1        | X |   |   |   |   |   |   |   |   |   |   |   |   |   |
+    cmpi0        |   | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    cond_br1     |   | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    cond_br2     |   | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    cond_br3     |   | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
   Basic Block #2
-    ---------+---+
-    Operation| 0 |
-    ---------+---+
-    return1  | - |
-    ---------+---+
+    ---------+---+---+
+    Operation| 0 | 1 |
+    ---------+---+---+
+    return1  |   | - |
+    ---------+---+---+
 
 === End of Scheduling Result ===
 

@@ -18,26 +18,26 @@ module {
     %15 = arith.extui %6 {cfx.bb = 1 : i64, handshake.name = "extui1", sched_var = #cfx.sched_var<0>} : i32 to i64
     %16 = arith.index_cast %15 {cfx.bb = 1 : i64, handshake.name = "index_cast1", sched_var = #cfx.sched_var<0>} : i64 to index
     %17 = memref.load %arg1[%16] {cfx.bb = 1 : i64, handshake.mem_interface = #handshake.mem_interface<MC>, handshake.name = "load1", sched_var = #cfx.sched_var<0>} : memref<1000xi32>
-    %18 = arith.muli %14, %17 {cfx.bb = 1 : i64, handshake.name = "muli0", sched_var = #cfx.sched_var<0>} : i32
+    %18 = arith.muli %14, %17 {cfx.bb = 1 : i64, handshake.name = "muli0", sched_var = #cfx.sched_var<1>} : i32
     %19 = arith.extui %6 {cfx.bb = 1 : i64, handshake.name = "extui2", sched_var = #cfx.sched_var<0>} : i32 to i64
     %20 = arith.index_cast %19 {cfx.bb = 1 : i64, handshake.name = "index_cast2", sched_var = #cfx.sched_var<0>} : i64 to index
     %21 = memref.load %arg2[%20] {cfx.bb = 1 : i64, handshake.mem_interface = #handshake.mem_interface<MC>, handshake.name = "load2", sched_var = #cfx.sched_var<0>} : memref<1000xi32>
     %22 = arith.extui %6 {cfx.bb = 1 : i64, handshake.name = "extui3", sched_var = #cfx.sched_var<0>} : i32 to i64
     %23 = arith.index_cast %22 {cfx.bb = 1 : i64, handshake.name = "index_cast3", sched_var = #cfx.sched_var<0>} : i64 to index
     %24 = memref.load %arg3[%23] {cfx.bb = 1 : i64, handshake.mem_interface = #handshake.mem_interface<MC>, handshake.name = "load3", sched_var = #cfx.sched_var<0>} : memref<1000xi32>
-    %25 = arith.muli %21, %24 {cfx.bb = 1 : i64, handshake.name = "muli1", sched_var = #cfx.sched_var<0>} : i32
-    %26 = arith.addi %18, %25 {cfx.bb = 1 : i64, handshake.name = "addi0", sched_var = #cfx.sched_var<0>} : i32
-    %27 = arith.addi %7, %26 {cfx.bb = 1 : i64, handshake.name = "addi1", sched_var = #cfx.sched_var<0>} : i32
+    %25 = arith.muli %21, %24 {cfx.bb = 1 : i64, handshake.name = "muli1", sched_var = #cfx.sched_var<1>} : i32
+    %26 = arith.addi %18, %25 {cfx.bb = 1 : i64, handshake.name = "addi0", sched_var = #cfx.sched_var<5>} : i32
+    %27 = arith.addi %7, %26 {cfx.bb = 1 : i64, handshake.name = "addi1", sched_var = #cfx.sched_var<6>} : i32
     %28 = arith.addi %6, %11 {cfx.bb = 1 : i64, handshake.name = "addi2", sched_var = #cfx.sched_var<0>} : i32
-    %29 = arith.cmpi ult, %28, %10 {cfx.bb = 1 : i64, handshake.name = "cmpi0", sched_var = #cfx.sched_var<0>} : i32
-    %30 = cfx.cond_br cond = %29[when_true], input = %28 {cfx.bb = 1 : i64, handshake.name = "cond_br2", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %31 = cfx.cond_br cond = %29[when_true], input = %27 {cfx.bb = 1 : i64, handshake.name = "cond_br3", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %32 = cfx.cond_br cond = %29[when_true], input = %8 {cfx.bb = 1 : i64, handshake.name = "cond_br4", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %33 = cfx.cond_br cond = %29[when_true], input = %9 {cfx.bb = 1 : i64, handshake.name = "cond_br5", sched_var = #cfx.sched_var<0>} : i1, i0 -> i0
-    %34 = cfx.cond_br cond = %29[when_false], input = %11 {cfx.bb = 1 : i64, handshake.name = "cond_br6", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %35 = cfx.cond_br cond = %29[when_false], input = %27 {cfx.bb = 1 : i64, handshake.name = "cond_br7", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %36 = cfx.cond_br cond = %29[when_false], input = %8 {cfx.bb = 1 : i64, handshake.name = "cond_br8", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %37 = cfx.cond_br cond = %29[when_false], input = %9 {cfx.bb = 1 : i64, handshake.name = "cond_br9", sched_var = #cfx.sched_var<0>} : i1, i0 -> i0
+    %29 = arith.cmpi ult, %28, %10 {cfx.bb = 1 : i64, handshake.name = "cmpi0", sched_var = #cfx.sched_var<1>} : i32
+    %30 = cfx.cond_br cond = %29[when_true], input = %28 {cfx.bb = 1 : i64, handshake.name = "cond_br2", sched_var = #cfx.sched_var<1>} : i1, i32 -> i32
+    %31 = cfx.cond_br cond = %29[when_true], input = %27 {cfx.bb = 1 : i64, handshake.name = "cond_br3", sched_var = #cfx.sched_var<7>} : i1, i32 -> i32
+    %32 = cfx.cond_br cond = %29[when_true], input = %8 {cfx.bb = 1 : i64, handshake.name = "cond_br4", sched_var = #cfx.sched_var<1>} : i1, i32 -> i32
+    %33 = cfx.cond_br cond = %29[when_true], input = %9 {cfx.bb = 1 : i64, handshake.name = "cond_br5", sched_var = #cfx.sched_var<1>} : i1, i0 -> i0
+    %34 = cfx.cond_br cond = %29[when_false], input = %11 {cfx.bb = 1 : i64, handshake.name = "cond_br6", sched_var = #cfx.sched_var<1>} : i1, i32 -> i32
+    %35 = cfx.cond_br cond = %29[when_false], input = %27 {cfx.bb = 1 : i64, handshake.name = "cond_br7", sched_var = #cfx.sched_var<7>} : i1, i32 -> i32
+    %36 = cfx.cond_br cond = %29[when_false], input = %8 {cfx.bb = 1 : i64, handshake.name = "cond_br8", sched_var = #cfx.sched_var<1>} : i1, i32 -> i32
+    %37 = cfx.cond_br cond = %29[when_false], input = %9 {cfx.bb = 1 : i64, handshake.name = "cond_br9", sched_var = #cfx.sched_var<1>} : i1, i0 -> i0
     %38 = cfx.phi %61, %34 {cfx.bb = 2 : i64, handshake.name = "phi4", sched_var = #cfx.sched_var<0>} : i32, i32 -> i32
     %39 = cfx.phi %62, %35 {cfx.bb = 2 : i64, handshake.name = "phi5", sched_var = #cfx.sched_var<0>} : i32, i32 -> i32
     %40 = cfx.phi %63, %36 {cfx.bb = 2 : i64, handshake.name = "phi6", sched_var = #cfx.sched_var<0>} : i32, i32 -> i32
@@ -49,25 +49,25 @@ module {
     %46 = arith.extui %38 {cfx.bb = 2 : i64, handshake.name = "extui5", sched_var = #cfx.sched_var<0>} : i32 to i64
     %47 = arith.index_cast %46 {cfx.bb = 2 : i64, handshake.name = "index_cast5", sched_var = #cfx.sched_var<0>} : i64 to index
     %48 = memref.load %arg1[%47] {cfx.bb = 2 : i64, handshake.mem_interface = #handshake.mem_interface<MC>, handshake.name = "load5", sched_var = #cfx.sched_var<0>} : memref<1000xi32>
-    %49 = arith.muli %45, %48 {cfx.bb = 2 : i64, handshake.name = "muli2", sched_var = #cfx.sched_var<0>} : i32
+    %49 = arith.muli %45, %48 {cfx.bb = 2 : i64, handshake.name = "muli2", sched_var = #cfx.sched_var<1>} : i32
     %50 = arith.extui %38 {cfx.bb = 2 : i64, handshake.name = "extui6", sched_var = #cfx.sched_var<0>} : i32 to i64
     %51 = arith.index_cast %50 {cfx.bb = 2 : i64, handshake.name = "index_cast6", sched_var = #cfx.sched_var<0>} : i64 to index
     %52 = memref.load %arg2[%51] {cfx.bb = 2 : i64, handshake.mem_interface = #handshake.mem_interface<MC>, handshake.name = "load6", sched_var = #cfx.sched_var<0>} : memref<1000xi32>
     %53 = arith.extui %38 {cfx.bb = 2 : i64, handshake.name = "extui7", sched_var = #cfx.sched_var<0>} : i32 to i64
     %54 = arith.index_cast %53 {cfx.bb = 2 : i64, handshake.name = "index_cast7", sched_var = #cfx.sched_var<0>} : i64 to index
     %55 = memref.load %arg3[%54] {cfx.bb = 2 : i64, handshake.mem_interface = #handshake.mem_interface<MC>, handshake.name = "load7", sched_var = #cfx.sched_var<0>} : memref<1000xi32>
-    %56 = arith.muli %52, %55 {cfx.bb = 2 : i64, handshake.name = "muli3", sched_var = #cfx.sched_var<0>} : i32
-    %57 = arith.addi %49, %56 {cfx.bb = 2 : i64, handshake.name = "addi3", sched_var = #cfx.sched_var<0>} : i32
-    %58 = arith.addi %39, %57 {cfx.bb = 2 : i64, handshake.name = "addi4", sched_var = #cfx.sched_var<0>} : i32
+    %56 = arith.muli %52, %55 {cfx.bb = 2 : i64, handshake.name = "muli3", sched_var = #cfx.sched_var<1>} : i32
+    %57 = arith.addi %49, %56 {cfx.bb = 2 : i64, handshake.name = "addi3", sched_var = #cfx.sched_var<5>} : i32
+    %58 = arith.addi %39, %57 {cfx.bb = 2 : i64, handshake.name = "addi4", sched_var = #cfx.sched_var<6>} : i32
     %59 = arith.muli %38, %40 {cfx.bb = 2 : i64, handshake.name = "muli4", sched_var = #cfx.sched_var<0>} : i32
-    %60 = arith.cmpi ult, %59, %42 {cfx.bb = 2 : i64, handshake.name = "cmpi1", sched_var = #cfx.sched_var<0>} : i32
-    %61 = cfx.cond_br cond = %60[when_true], input = %59 {cfx.bb = 2 : i64, handshake.name = "cond_br10", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %62 = cfx.cond_br cond = %60[when_true], input = %58 {cfx.bb = 2 : i64, handshake.name = "cond_br11", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %63 = cfx.cond_br cond = %60[when_true], input = %40 {cfx.bb = 2 : i64, handshake.name = "cond_br12", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %64 = cfx.cond_br cond = %60[when_true], input = %41 {cfx.bb = 2 : i64, handshake.name = "cond_br13", sched_var = #cfx.sched_var<0>} : i1, i0 -> i0
-    %65 = cfx.cond_br cond = %60[when_false], input = %58 {cfx.bb = 2 : i64, handshake.name = "cond_br14", sched_var = #cfx.sched_var<0>} : i1, i32 -> i32
-    %66 = cfx.cond_br cond = %60[when_false], input = %41 {cfx.bb = 2 : i64, handshake.name = "cond_br15", sched_var = #cfx.sched_var<0>} : i1, i0 -> i0
-    cfx.return start = %66, %65 {cfx.bb = 3 : i64, handshake.name = "return1", sched_var = #cfx.sched_var<0>} : i32
+    %60 = arith.cmpi ult, %59, %42 {cfx.bb = 2 : i64, handshake.name = "cmpi1", sched_var = #cfx.sched_var<4>} : i32
+    %61 = cfx.cond_br cond = %60[when_true], input = %59 {cfx.bb = 2 : i64, handshake.name = "cond_br10", sched_var = #cfx.sched_var<4>} : i1, i32 -> i32
+    %62 = cfx.cond_br cond = %60[when_true], input = %58 {cfx.bb = 2 : i64, handshake.name = "cond_br11", sched_var = #cfx.sched_var<7>} : i1, i32 -> i32
+    %63 = cfx.cond_br cond = %60[when_true], input = %40 {cfx.bb = 2 : i64, handshake.name = "cond_br12", sched_var = #cfx.sched_var<4>} : i1, i32 -> i32
+    %64 = cfx.cond_br cond = %60[when_true], input = %41 {cfx.bb = 2 : i64, handshake.name = "cond_br13", sched_var = #cfx.sched_var<4>} : i1, i0 -> i0
+    %65 = cfx.cond_br cond = %60[when_false], input = %58 {cfx.bb = 2 : i64, handshake.name = "cond_br14", sched_var = #cfx.sched_var<7>} : i1, i32 -> i32
+    %66 = cfx.cond_br cond = %60[when_false], input = %41 {cfx.bb = 2 : i64, handshake.name = "cond_br15", sched_var = #cfx.sched_var<4>} : i1, i0 -> i0
+    cfx.return start = %66, %65 {cfx.bb = 3 : i64, handshake.name = "return1", sched_var = #cfx.sched_var<7>} : i32
   }
 }
 

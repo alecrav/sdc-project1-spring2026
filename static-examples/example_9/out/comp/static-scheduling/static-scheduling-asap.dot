@@ -37,15 +37,15 @@ digraph ScheduledGraph {
     extui1 [label="extui1\n@0 (lat=0)"];
     index_cast1 [label="index_cast1\n@0 (lat=0)"];
     load1 [label="load1\n@0 (lat=1)"];
-    muli0 [label="muli0\n@0 (lat=4)"];
+    muli0 [label="muli0\n@1 (lat=4)"];
     extui2 [label="extui2\n@0 (lat=0)"];
     index_cast2 [label="index_cast2\n@0 (lat=0)"];
-    store2 [label="store2\n@0 (lat=1)"];
+    store2 [label="store2\n@5 (lat=1)"];
     addi0 [label="addi0\n@0 (lat=1)"];
-    cmpi0 [label="cmpi0\n@0 (lat=0)"];
-    cond_br1 [label="cond_br1\n@0 (lat=0)"];
-    cond_br2 [label="cond_br2\n@0 (lat=0)"];
-    cond_br3 [label="cond_br3\n@0 (lat=0)"];
+    cmpi0 [label="cmpi0\n@1 (lat=0)"];
+    cond_br1 [label="cond_br1\n@1 (lat=0)"];
+    cond_br2 [label="cond_br2\n@1 (lat=0)"];
+    cond_br3 [label="cond_br3\n@1 (lat=0)"];
     {rank=min; dot_0 [shape=point, width=0.08, color=blue]; dot_2 [shape=point, width=0.08, color=blue];}
     {rank=same; dot_6 [shape=point, width=0.08, color=blue]; dot_9 [shape=point, width=0.08, color=blue];}
     dot_0 -> dot_6 [style=invis, minlen=2];
@@ -92,7 +92,7 @@ digraph ScheduledGraph {
     label="example_9 :: BB#2";
     style=rounded;
 
-    return1 [label="return1\n@0 (lat=0)"];
+    return1 [label="return1\n@1 (lat=0)"];
     {rank=min; dot_4 [shape=point, width=0.08, color=blue];}
 
   }

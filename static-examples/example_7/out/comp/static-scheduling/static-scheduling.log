@@ -17,69 +17,69 @@ Operation: load0 scheduled at time: 0
 Operation: extui1 scheduled at time: 0
 Operation: index_cast1 scheduled at time: 0
 Operation: load1 scheduled at time: 0
-Operation: muli0 scheduled at time: 0
+Operation: muli0 scheduled at time: 1
 Operation: index_cast2 scheduled at time: 0
-Operation: store2 scheduled at time: 0
+Operation: store2 scheduled at time: 5
 Operation: extui2 scheduled at time: 0
 Operation: index_cast3 scheduled at time: 0
 Operation: load3 scheduled at time: 0
 Operation: extui3 scheduled at time: 0
 Operation: index_cast4 scheduled at time: 0
 Operation: load4 scheduled at time: 0
-Operation: muli1 scheduled at time: 0
+Operation: muli1 scheduled at time: 1
 Operation: index_cast5 scheduled at time: 0
-Operation: store5 scheduled at time: 0
+Operation: store5 scheduled at time: 5
 Operation: extui4 scheduled at time: 0
 Operation: index_cast6 scheduled at time: 0
 Operation: load6 scheduled at time: 0
 Operation: extui5 scheduled at time: 0
 Operation: index_cast7 scheduled at time: 0
 Operation: load7 scheduled at time: 0
-Operation: muli2 scheduled at time: 0
+Operation: muli2 scheduled at time: 1
 Operation: index_cast8 scheduled at time: 0
-Operation: store8 scheduled at time: 0
+Operation: store8 scheduled at time: 5
 Operation: extui6 scheduled at time: 0
 Operation: index_cast9 scheduled at time: 0
 Operation: load9 scheduled at time: 0
 Operation: extui7 scheduled at time: 0
 Operation: index_cast10 scheduled at time: 0
 Operation: load10 scheduled at time: 0
-Operation: muli3 scheduled at time: 0
+Operation: muli3 scheduled at time: 1
 Operation: index_cast11 scheduled at time: 0
-Operation: store11 scheduled at time: 0
+Operation: store11 scheduled at time: 5
 Operation: extui8 scheduled at time: 0
 Operation: index_cast12 scheduled at time: 0
 Operation: load12 scheduled at time: 0
 Operation: extui9 scheduled at time: 0
 Operation: index_cast13 scheduled at time: 0
 Operation: load13 scheduled at time: 0
-Operation: muli4 scheduled at time: 0
+Operation: muli4 scheduled at time: 1
 Operation: index_cast14 scheduled at time: 0
-Operation: store14 scheduled at time: 0
+Operation: store14 scheduled at time: 5
 Operation: extui10 scheduled at time: 0
 Operation: index_cast15 scheduled at time: 0
 Operation: load15 scheduled at time: 0
 Operation: extui11 scheduled at time: 0
 Operation: index_cast16 scheduled at time: 0
 Operation: load16 scheduled at time: 0
-Operation: muli5 scheduled at time: 0
+Operation: muli5 scheduled at time: 1
 Operation: index_cast17 scheduled at time: 0
-Operation: store17 scheduled at time: 0
+Operation: store17 scheduled at time: 5
 Operation: extui12 scheduled at time: 0
 Operation: index_cast18 scheduled at time: 0
 Operation: load18 scheduled at time: 0
 Operation: extui13 scheduled at time: 0
 Operation: index_cast19 scheduled at time: 0
 Operation: load19 scheduled at time: 0
-Operation: muli6 scheduled at time: 0
+Operation: muli6 scheduled at time: 1
 Operation: index_cast20 scheduled at time: 0
-Operation: store20 scheduled at time: 0
+Operation: store20 scheduled at time: 5
 Operation: addi0 scheduled at time: 0
-Operation: cmpi0 scheduled at time: 0
-Operation: cond_br1 scheduled at time: 0
-Operation: cond_br2 scheduled at time: 0
-Operation: cond_br3 scheduled at time: 0
-Operation: return1 scheduled at time: 0
+Operation: cmpi0 scheduled at time: 1
+Operation: cond_br1 scheduled at time: 1
+Operation: cond_br2 scheduled at time: 1
+Operation: cond_br3 scheduled at time: 1
+Operation: return1 scheduled at time: 1
 
 === Scheduling Result ===
 Function: example_7
@@ -102,89 +102,89 @@ Function: example_7
     -----------+---+
 
   Basic Block #1
-    --------------+---+
-         Operation| 0 |
-    --------------+---+
-    phi0          | - |
-    phi1          | - |
-    constant2     | - |
-    constant5     | - |
-    extui0        | - |
-    index_cast0   | - |
-    load0         | X |
-    extui1        | - |
-    index_cast1   | - |
-    load1         | X |
-    muli0         | X |
-    index_cast2   | - |
-    store2        | X |
-    extui2        | - |
-    index_cast3   | - |
-    load3         | X |
-    extui3        | - |
-    index_cast4   | - |
-    load4         | X |
-    muli1         | X |
-    index_cast5   | - |
-    store5        | X |
-    extui4        | - |
-    index_cast6   | - |
-    load6         | X |
-    extui5        | - |
-    index_cast7   | - |
-    load7         | X |
-    muli2         | X |
-    index_cast8   | - |
-    store8        | X |
-    extui6        | - |
-    index_cast9   | - |
-    load9         | X |
-    extui7        | - |
-    index_cast10  | - |
-    load10        | X |
-    muli3         | X |
-    index_cast11  | - |
-    store11       | X |
-    extui8        | - |
-    index_cast12  | - |
-    load12        | X |
-    extui9        | - |
-    index_cast13  | - |
-    load13        | X |
-    muli4         | X |
-    index_cast14  | - |
-    store14       | X |
-    extui10       | - |
-    index_cast15  | - |
-    load15        | X |
-    extui11       | - |
-    index_cast16  | - |
-    load16        | X |
-    muli5         | X |
-    index_cast17  | - |
-    store17       | X |
-    extui12       | - |
-    index_cast18  | - |
-    load18        | X |
-    extui13       | - |
-    index_cast19  | - |
-    load19        | X |
-    muli6         | X |
-    index_cast20  | - |
-    store20       | X |
-    addi0         | X |
-    cmpi0         | - |
-    cond_br1      | - |
-    cond_br2      | - |
-    cond_br3      | - |
-    --------------+---+
+    --------------+---+---+---+---+---+---+
+         Operation| 0 | 1 | 2 | 3 | 4 | 5 |
+    --------------+---+---+---+---+---+---+
+    phi0          | - |   |   |   |   |   |
+    phi1          | - |   |   |   |   |   |
+    constant2     | - |   |   |   |   |   |
+    constant5     | - |   |   |   |   |   |
+    extui0        | - |   |   |   |   |   |
+    index_cast0   | - |   |   |   |   |   |
+    load0         | X |   |   |   |   |   |
+    extui1        | - |   |   |   |   |   |
+    index_cast1   | - |   |   |   |   |   |
+    load1         | X |   |   |   |   |   |
+    muli0         |   | X | X | X | X |   |
+    index_cast2   | - |   |   |   |   |   |
+    store2        |   |   |   |   |   | X |
+    extui2        | - |   |   |   |   |   |
+    index_cast3   | - |   |   |   |   |   |
+    load3         | X |   |   |   |   |   |
+    extui3        | - |   |   |   |   |   |
+    index_cast4   | - |   |   |   |   |   |
+    load4         | X |   |   |   |   |   |
+    muli1         |   | X | X | X | X |   |
+    index_cast5   | - |   |   |   |   |   |
+    store5        |   |   |   |   |   | X |
+    extui4        | - |   |   |   |   |   |
+    index_cast6   | - |   |   |   |   |   |
+    load6         | X |   |   |   |   |   |
+    extui5        | - |   |   |   |   |   |
+    index_cast7   | - |   |   |   |   |   |
+    load7         | X |   |   |   |   |   |
+    muli2         |   | X | X | X | X |   |
+    index_cast8   | - |   |   |   |   |   |
+    store8        |   |   |   |   |   | X |
+    extui6        | - |   |   |   |   |   |
+    index_cast9   | - |   |   |   |   |   |
+    load9         | X |   |   |   |   |   |
+    extui7        | - |   |   |   |   |   |
+    index_cast10  | - |   |   |   |   |   |
+    load10        | X |   |   |   |   |   |
+    muli3         |   | X | X | X | X |   |
+    index_cast11  | - |   |   |   |   |   |
+    store11       |   |   |   |   |   | X |
+    extui8        | - |   |   |   |   |   |
+    index_cast12  | - |   |   |   |   |   |
+    load12        | X |   |   |   |   |   |
+    extui9        | - |   |   |   |   |   |
+    index_cast13  | - |   |   |   |   |   |
+    load13        | X |   |   |   |   |   |
+    muli4         |   | X | X | X | X |   |
+    index_cast14  | - |   |   |   |   |   |
+    store14       |   |   |   |   |   | X |
+    extui10       | - |   |   |   |   |   |
+    index_cast15  | - |   |   |   |   |   |
+    load15        | X |   |   |   |   |   |
+    extui11       | - |   |   |   |   |   |
+    index_cast16  | - |   |   |   |   |   |
+    load16        | X |   |   |   |   |   |
+    muli5         |   | X | X | X | X |   |
+    index_cast17  | - |   |   |   |   |   |
+    store17       |   |   |   |   |   | X |
+    extui12       | - |   |   |   |   |   |
+    index_cast18  | - |   |   |   |   |   |
+    load18        | X |   |   |   |   |   |
+    extui13       | - |   |   |   |   |   |
+    index_cast19  | - |   |   |   |   |   |
+    load19        | X |   |   |   |   |   |
+    muli6         |   | X | X | X | X |   |
+    index_cast20  | - |   |   |   |   |   |
+    store20       |   |   |   |   |   | X |
+    addi0         | X |   |   |   |   |   |
+    cmpi0         |   | - |   |   |   |   |
+    cond_br1      |   | - |   |   |   |   |
+    cond_br2      |   | - |   |   |   |   |
+    cond_br3      |   | - |   |   |   |   |
+    --------------+---+---+---+---+---+---+
 
   Basic Block #2
-    ---------+---+
-    Operation| 0 |
-    ---------+---+
-    return1  | - |
-    ---------+---+
+    ---------+---+---+
+    Operation| 0 | 1 |
+    ---------+---+---+
+    return1  |   | - |
+    ---------+---+---+
 
 === End of Scheduling Result ===
 

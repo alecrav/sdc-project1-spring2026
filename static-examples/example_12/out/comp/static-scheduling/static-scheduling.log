@@ -21,18 +21,18 @@ Operation: load0 scheduled at time: 0
 Operation: extui1 scheduled at time: 0
 Operation: index_cast1 scheduled at time: 0
 Operation: load1 scheduled at time: 0
-Operation: mulf0 scheduled at time: 0
-Operation: mulf1 scheduled at time: 0
+Operation: mulf0 scheduled at time: 1
+Operation: mulf1 scheduled at time: 6
 Operation: addi0 scheduled at time: 0
-Operation: cmpf0 scheduled at time: 0
-Operation: cmpi0 scheduled at time: 0
-Operation: andi0 scheduled at time: 0
-Operation: cond_br1 scheduled at time: 0
-Operation: cond_br2 scheduled at time: 0
-Operation: cond_br3 scheduled at time: 0
-Operation: cond_br4 scheduled at time: 0
-Operation: cond_br5 scheduled at time: 0
-Operation: return1 scheduled at time: 0
+Operation: cmpf0 scheduled at time: 11
+Operation: cmpi0 scheduled at time: 1
+Operation: andi0 scheduled at time: 12
+Operation: cond_br1 scheduled at time: 12
+Operation: cond_br2 scheduled at time: 12
+Operation: cond_br3 scheduled at time: 12
+Operation: cond_br4 scheduled at time: 12
+Operation: cond_br5 scheduled at time: 12
+Operation: return1 scheduled at time: 12
 
 === Scheduling Result ===
 Function: example_12
@@ -51,40 +51,40 @@ Function: example_12
     -----------+---+
 
   Basic Block #1
-    -------------+---+
-        Operation| 0 |
-    -------------+---+
-    phi0         | - |
-    phi1         | - |
-    phi2         | - |
-    constant4    | - |
-    constant8    | - |
-    constant9    | - |
-    extui0       | - |
-    index_cast0  | - |
-    load0        | X |
-    extui1       | - |
-    index_cast1  | - |
-    load1        | X |
-    mulf0        | X |
-    mulf1        | X |
-    addi0        | X |
-    cmpf0        | X |
-    cmpi0        | - |
-    andi0        | - |
-    cond_br1     | - |
-    cond_br2     | - |
-    cond_br3     | - |
-    cond_br4     | - |
-    cond_br5     | - |
-    -------------+---+
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+
+        Operation| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+
+    phi0         | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    phi1         | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    phi2         | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    constant4    | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    constant8    | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    constant9    | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui0       | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast0  | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    load0        | X |   |   |   |   |   |   |   |   |   |   |   |   |
+    extui1       | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    index_cast1  | - |   |   |   |   |   |   |   |   |   |   |   |   |
+    load1        | X |   |   |   |   |   |   |   |   |   |   |   |   |
+    mulf0        |   | X | X | X | X | X |   |   |   |   |   |   |   |
+    mulf1        |   |   |   |   |   |   | X | X | X | X | X |   |   |
+    addi0        | X |   |   |   |   |   |   |   |   |   |   |   |   |
+    cmpf0        |   |   |   |   |   |   |   |   |   |   |   | X |   |
+    cmpi0        |   | - |   |   |   |   |   |   |   |   |   |   |   |
+    andi0        |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    cond_br1     |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    cond_br2     |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    cond_br3     |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    cond_br4     |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    cond_br5     |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    -------------+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
   Basic Block #2
-    ---------+---+
-    Operation| 0 |
-    ---------+---+
-    return1  | - |
-    ---------+---+
+    ---------+---+---+---+---+---+---+---+---+---+---+---+---+---+
+    Operation| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |
+    ---------+---+---+---+---+---+---+---+---+---+---+---+---+---+
+    return1  |   |   |   |   |   |   |   |   |   |   |   |   | - |
+    ---------+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
 === End of Scheduling Result ===
 

@@ -20,6 +20,23 @@ namespace dynamatic {
 mlir::LogicalResult
 ALAPScheduling::createOptimizationObjective(mlir::ModuleOp moduleOp) {
   // [START Student Assignment]
+  // Check model is created
+  if (!model) {
+    llvm::errs() << "MILP model is not initialized.\n";
+    return mlir::failure();
+  }
+  LinExpr objective;
+
+  // Create scheduling variables for each operation in the module
+  for (auto funcOp : moduleOp.getOps<cfx::FuncOp>()) {
+    for (auto &block : funcOp.getCFXBasicBlocks()) {
+      for (auto *op : block) {
+        CPVar schedVar = this->operationSchedulingVariables.lookup(op);
+        objective += schedVar;
+      }
+    }
+  }
+  this->model->setMaximizeObjective(objective);
   // [END Student Assignment]
   return success();
 }
@@ -93,6 +110,23 @@ mlir::LogicalResult
 ALAPScheduling::addALAPDeadlineConstraint(mlir::ModuleOp moduleOp,
                                            const StaticTimingConfig &timingConfig) {
   // [START Student Assignment]
+  for (auto funcOp : moduleOp.getOps<cfx::FuncOp>()) {
+    for (auto &block : funcOp.getCFXBasicBlocks()) {
+      std::optional<unsigned> deadline = this->getDeadline(block.getID());
+      // If the BB does not have a deadline, we cannot perform ALAP scheduling.
+      if (!deadline)
+      // Inform the scheduler of the failure by returning an
+      // mlir::LogicalResult back to the pass.
+      return mlir::failure();
+      // Convert from an optional<unsigned> to an unsigned.
+      int latency = int(*deadline);
+      for (auto *op : block) {
+        CPVar sv_op = this->operationSchedulingVariables.lookup(op);
+        int lat = int(timingConfig.getLatency(op).value_or(0.0));
+        this->model->addConstr(sv_op + lat <= latency);
+      }
+    }
+  }
   // [END Student Assignment]
   return mlir::success();
 }

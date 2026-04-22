@@ -1,0 +1,11 @@
+Welcome to the CBC MILP Solver 
+Version: 2.10.12 
+Build Date: Aug 20 2024 
+
+command line - cbc cbc_model_140737413286528_3.lp sec 180 solve solu cbc_solution_140737413286528_3.sol (default strategy 1)
+ CoinLpIO::readLp(): Maximization problem reformulated as minimization
+Coin0009I Switching back to maximization to get correct duals etc
+seconds was changed from 1e+100 to 180
+Problem is infeasible - 0.03 seconds
+Total time (CPU seconds):       0.05   (Wallclock seconds):       0.06
+
